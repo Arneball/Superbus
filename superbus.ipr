@@ -224,11 +224,8 @@
   </component>
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/example/example.iml" filepath="$PROJECT_DIR$/example/example.iml" />
       <module fileurl="file://$PROJECT_DIR$/example-sql/example-sql.iml" filepath="$PROJECT_DIR$/example-sql/example-sql.iml" />
-      <module fileurl="file://$PROJECT_DIR$/library/src/main/main.iml" filepath="$PROJECT_DIR$/library/src/main/main.iml" />
       <module fileurl="file://$PROJECT_DIR$/library/superbus.iml" filepath="$PROJECT_DIR$/library/superbus.iml" />
-      <module fileurl="file://$PROJECT_DIR$/library/src/test/test.iml" filepath="$PROJECT_DIR$/library/src/test/test.iml" />
     </modules>
   </component>
   <component name="ProjectResources">
