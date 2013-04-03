@@ -39,7 +39,7 @@ public interface PersistenceProvider
 
     void logPersistenceState();
 
-    void sendMessage(String message);
+    void sendMessage(Context context, String message);
 
-    void sendMessage(String message, Map args);
+    void sendMessage(Context context, String message, Map args);
 }

@@ -1,6 +1,7 @@
 package co.touchlab.android.superbus.provider.gson;
 
 import android.content.Context;
+import co.touchlab.android.superbus.Command;
 import co.touchlab.android.superbus.StorageException;
 import co.touchlab.android.superbus.log.BusLog;
 import co.touchlab.android.superbus.log.BusLogImpl;
@@ -77,5 +78,10 @@ public class GsonFilePersistenceProvider extends AbstractFilePersistenceProvider
         {
             throw new StorageException(e);
         }
+    }
+
+    public void removePersistedCommand(Command c) throws StorageException
+    {
+        throw new UnsupportedOperationException("File store needs fixing");
     }
 }
