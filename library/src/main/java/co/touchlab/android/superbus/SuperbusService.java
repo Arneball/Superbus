@@ -20,7 +20,7 @@ import co.touchlab.android.superbus.provider.PersistenceProvider;
  * Date: 1/11/12
  * Time: 8:57 AM
  */
-public class SuperbusService extends Service implements SuperbusServiceIntf
+public class SuperbusService extends Service
 {
     private SuperbusProcessor processor;
     private BusLog log;
@@ -67,11 +67,6 @@ public class SuperbusService extends Service implements SuperbusServiceIntf
         log.i(TAG, "onDestroy");
     }
 
-    public Context getContext()
-    {
-        return this;
-    }
-
     public void checkLoadLog(Application application)
     {
         if (application instanceof PersistedApplication)
@@ -84,17 +79,6 @@ public class SuperbusService extends Service implements SuperbusServiceIntf
         }
         else
             Log.e(TAG, "Application does not implement PersistedApplication. Could not load provider.");
-    }
-
-    /**
-     * Finally shut down.  This should ONLY be in the main UI thread.  Presumably, if we call stopSelf here,
-     * and another call comes in right after, the service will be restarted.  If that assumption is incorrect,
-     * there's the remote possibility that a command will not be processed right away, but it SHOULD still
-     * stick around, so at worst the processing will be delayed.
-     */
-    public void allDone()
-    {
-        stopSelf();
     }
 
     /**

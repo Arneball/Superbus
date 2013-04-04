@@ -1,6 +1,7 @@
 package co.touchlab.android.superbus;
 
 import android.app.Application;
+import android.app.Service;
 import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
@@ -25,15 +26,16 @@ public class SuperbusProcessor
     private CommandPurgePolicy commandPurgePolicy;
     private BusLog log;
     private Handler mainThreadHandler;
-    private SuperbusServiceIntf parentService;
-
-    void init(SuperbusServiceIntf parentService)
+    private Service parentService;
+    private Application appContext;
+    
+    void init(Service parentService)
     {
+        this.appContext = parentService.getApplication();
         this.parentService = parentService;
-        Application application = (Application) parentService.getContext().getApplicationContext();
-        provider = checkLoadProvider(application);
-        eventListener = checkLoadEventListener(application);
-        commandPurgePolicy = checkLoadCommandPurgePolicy(application);
+        provider = checkLoadProvider(appContext);
+        eventListener = checkLoadEventListener(appContext);
+        commandPurgePolicy = checkLoadCommandPurgePolicy(appContext);
         log.v(TAG, "onCreate " + System.currentTimeMillis());
 
         mainThreadHandler = new Handler();
@@ -109,7 +111,7 @@ public class SuperbusProcessor
                 forceShutdown = false;
 
                 if (eventListener != null)
-                    eventListener.onBusStarted(parentService.getContext(), provider);
+                    eventListener.onBusStarted(appContext, provider);
 
                 while ((c = grabTop()) != null)
                 {
@@ -121,7 +123,7 @@ public class SuperbusProcessor
                     try
                     {
                         callCommand(c);
-                        c.onSuccess(parentService.getContext());
+                        c.onSuccess(appContext);
                         provider.removePersistedCommand(c);
                         transientCount = 0;
                     }
@@ -137,14 +139,14 @@ public class SuperbusProcessor
                             if (purge)
                             {
                                 log.w(TAG, "Purging command on TransientException: {" + c.logSummary() + "}");
-                                c.onPermanentError(parentService.getContext(), new PermanentException(e));
+                                c.onPermanentError(appContext, new PermanentException(e));
                                 provider.removePersistedCommand(c);
                             }
                             else
                             {
                                 log.i(TAG, "Reset command on TransientException: {" + c.logSummary() + "}");
-                                provider.putMemOnly(parentService.getContext(), c);
-                                c.onTransientError(parentService.getContext(), e);
+                                provider.putMemOnly(appContext, c);
+                                c.onTransientError(appContext, e);
                             }
 
                             delaySleep = 2000;
@@ -194,7 +196,13 @@ public class SuperbusProcessor
             {
                 log.i(TAG, "CommandThread loop done (forced)");
                 finishThread();
-                parentService.allDone();
+                mainThreadHandler.post(new Runnable()
+                {
+                    public void run()
+                    {
+                        stopService();
+                    }
+                });
             }
             else
             {
@@ -207,7 +215,6 @@ public class SuperbusProcessor
                 //TODO: Should confirm this assumption.
                 mainThreadHandler.post(new Runnable()
                 {
-                    @Override
                     public void run()
                     {
                         log.i(TAG, "CommandThread loop done (natural)");
@@ -233,7 +240,7 @@ public class SuperbusProcessor
                         }
                         else
                         {
-                            parentService.allDone();
+                            stopService();
                         }
                     }
                 });
@@ -245,8 +252,19 @@ public class SuperbusProcessor
         {
             log.e(TAG, null, e);
             PermanentException pe = e instanceof PermanentException ? (PermanentException) e : new PermanentException(e);
-            c.onPermanentError(parentService.getContext(), pe);
+            c.onPermanentError(appContext, pe);
         }
+    }
+
+    /**
+     * Finally shut down.  This should ONLY be in the main UI thread.  Presumably, if we call stopSelf here,
+     * and another call comes in right after, the service will be restarted.  If that assumption is incorrect,
+     * there's the remote possibility that a command will not be processed right away, but it SHOULD still
+     * stick around, so at worst the processing will be delayed.
+     */
+    private void stopService()
+    {
+        parentService.stopSelf();
     }
 
     private synchronized void finishThread()
@@ -271,7 +289,7 @@ public class SuperbusProcessor
     {
         logCommandVerbose(command, "callCommand-start");
 
-        command.callCommand(parentService.getContext());
+        command.callCommand(appContext);
 
         logCommandVerbose(command, "callComand-finish");
     }
