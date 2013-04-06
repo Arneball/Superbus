@@ -74,7 +74,7 @@ public class JsonFilePersistenceProvider extends AbstractFilePersistenceProvider
         }
     }
 
-    public void removePersistedCommand(Command c) throws StorageException
+    public void removeCurrent(Command c) throws StorageException
     {
         throw new UnsupportedOperationException("File store needs fixing");
     }

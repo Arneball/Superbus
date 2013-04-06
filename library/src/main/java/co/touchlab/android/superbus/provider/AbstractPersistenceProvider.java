@@ -8,9 +8,7 @@ import co.touchlab.android.superbus.SuperbusService;
 import co.touchlab.android.superbus.log.BusLog;
 import co.touchlab.android.superbus.utils.UiThreadContext;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.PriorityQueue;
+import java.util.*;
 
 /**
  * Base class for implementing PersistenceProvider.  Unless you have something REALLY strange,
@@ -25,6 +23,7 @@ public abstract class AbstractPersistenceProvider implements PersistenceProvider
     private final PriorityQueue<Command> commandQueue = new PriorityQueue<Command>();
     private boolean initCalled = false;
     private BusLog log;
+    private Command top;
 
     protected AbstractPersistenceProvider(BusLog log)
     {
@@ -38,9 +37,30 @@ public abstract class AbstractPersistenceProvider implements PersistenceProvider
     }
 
     @Override
-    public final synchronized void putMemOnly(Context context, Command c) throws StorageException
+    public synchronized Command stageCurrent() throws StorageException
     {
+        loadInitialCommands();
+        Command top = commandQueue.poll();
+
+        assert this.top == null;//If not true, we're screwed.
+
+        this.top = top;
+
+        return top;
+    }
+
+    @Override
+    public final synchronized void unstageCurrent(Context context, Command c) throws StorageException
+    {
+        assert this.top == c;
+        this.top = null;
         runPut(context, c, false, false);
+    }
+
+    @Override
+    public void removeCurrent(Command c) throws StorageException
+    {
+        this.top = null;
     }
 
     private void runPut(final Context context, final Command c, final boolean busRestart, final boolean persist)
@@ -96,10 +116,15 @@ public abstract class AbstractPersistenceProvider implements PersistenceProvider
     }
 
     @Override
-    public synchronized Command getAndRemoveCurrent() throws StorageException
+    public final synchronized void queryAll(CommandQuery query)
     {
-        loadInitialCommands();
-        return commandQueue.poll();
+        if(top != null)
+            query.runQuery(top);
+
+        for (Command command : commandQueue)
+        {
+            query.runQuery(command);
+        }
     }
 
     @Override

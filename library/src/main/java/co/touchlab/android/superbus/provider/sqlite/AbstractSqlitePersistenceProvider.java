@@ -110,8 +110,9 @@ public abstract class AbstractSqlitePersistenceProvider extends AbstractStoredPe
     }
 
     @Override
-    public void removePersistedCommand(Command c) throws StorageException
+    public void removeCurrent(Command c) throws StorageException
     {
+        super.removeCurrent(c);
         removeCommand(c);
     }
 
@@ -167,6 +168,5 @@ public abstract class AbstractSqlitePersistenceProvider extends AbstractStoredPe
     public void dropTables(SQLiteDatabase database)
     {
         database.execSQL("drop table "+ TABLE_NAME);
-        createTables(database);
     }
 }

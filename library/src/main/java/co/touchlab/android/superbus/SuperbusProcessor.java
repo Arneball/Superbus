@@ -75,7 +75,7 @@ public class SuperbusProcessor
         try
         {
             provider.logPersistenceState();
-            return provider.getAndRemoveCurrent();
+            return provider.stageCurrent();
         }
         catch (StorageException e)
         {
@@ -124,7 +124,7 @@ public class SuperbusProcessor
                     {
                         callCommand(c);
                         c.onSuccess(appContext);
-                        provider.removePersistedCommand(c);
+                        provider.removeCurrent(c);
                         transientCount = 0;
                     }
                     catch (TransientException e)
@@ -140,12 +140,12 @@ public class SuperbusProcessor
                             {
                                 log.w(TAG, "Purging command on TransientException: {" + c.logSummary() + "}");
                                 c.onPermanentError(appContext, new PermanentException(e));
-                                provider.removePersistedCommand(c);
+                                provider.removeCurrent(c);
                             }
                             else
                             {
                                 log.i(TAG, "Reset command on TransientException: {" + c.logSummary() + "}");
-                                provider.putMemOnly(appContext, c);
+                                provider.unstageCurrent(appContext, c);
                                 c.onTransientError(appContext, e);
                             }
 
@@ -162,13 +162,13 @@ public class SuperbusProcessor
                         catch (StorageException e1)
                         {
                             logPermanentException(c, e1);
-                            provider.removePersistedCommand(c);
+                            provider.removeCurrent(c);
                         }
                     }
                     catch (Throwable e)
                     {
                         logPermanentException(c, e);
-                        provider.removePersistedCommand(c);
+                        provider.removeCurrent(c);
                     }
 
                     if (delaySleep > 0)

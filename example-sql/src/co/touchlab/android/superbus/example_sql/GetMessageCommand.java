@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import co.touchlab.android.superbus.Command;
 import co.touchlab.android.superbus.PermanentException;
+import co.touchlab.android.superbus.StorageException;
 import co.touchlab.android.superbus.TransientException;
 import co.touchlab.android.superbus.http.BusHttpClient;
 import co.touchlab.android.superbus.provider.file.StoredCommand;
@@ -35,11 +36,18 @@ public class GetMessageCommand extends SqliteCommand
     }
 
     @Override
-    public void onRuntimeMessage(String message)
+    public void onRuntimeMessage(Context context, String message)
     {
         if(message.equals(CANCEL_UPDATE))
             cancelUpdate = true;
-        repostSelf(context);
+        try
+        {
+            repostSelf(context);
+        }
+        catch (StorageException e)
+        {
+            //Nope
+        }
     }
 
     @Override

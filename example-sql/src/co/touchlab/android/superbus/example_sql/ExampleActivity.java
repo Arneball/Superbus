@@ -196,7 +196,7 @@ public class ExampleActivity extends Activity
 
         try
         {
-            persistenceProvider.sendMessage(GetMessageCommand.CANCEL_UPDATE);
+            persistenceProvider.sendMessage(this, GetMessageCommand.CANCEL_UPDATE);
 
             //Update the database
             instance.insertOrUpdateMessage(db, messageEntry);

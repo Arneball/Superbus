@@ -35,9 +35,4 @@ public class MemoryPersistenceProvider extends AbstractPersistenceProvider
     {
         //Do nothing
     }
-
-    public void removePersistedCommand(Command c) throws StorageException
-    {
-        //Do nothing
-    }
 }
