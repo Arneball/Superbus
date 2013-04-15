@@ -48,6 +48,8 @@ public interface PersistenceProvider
      */
     void removeCurrent(Command c)throws StorageException;
 
+    void removeFromQueue(Command c)throws StorageException;
+
     int getSize() throws StorageException;
 
     void logPersistenceState();

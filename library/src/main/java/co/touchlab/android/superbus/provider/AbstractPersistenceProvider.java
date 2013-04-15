@@ -63,6 +63,12 @@ public abstract class AbstractPersistenceProvider implements PersistenceProvider
         this.top = null;
     }
 
+    @Override
+    public synchronized void removeFromQueue(Command c) throws StorageException
+    {
+        commandQueue.remove(c);
+    }
+
     private void runPut(final Context context, final Command c, final boolean busRestart, final boolean persist)
     {
         //There may be serious I/O going on here.  Assert we're OK for that.

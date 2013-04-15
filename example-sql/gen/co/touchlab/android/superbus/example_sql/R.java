@@ -1,3 +1,5 @@
+/*___Generated_by_IDEA___*/
+
 package co.touchlab.android.superbus.example_sql;
 
 /* This stub is for using by IDE only. It is NOT the R class actually packed into APK */

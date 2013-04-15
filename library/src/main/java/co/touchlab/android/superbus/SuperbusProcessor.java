@@ -310,13 +310,14 @@ public class SuperbusProcessor
             PersistedApplication persistedApplication = (PersistedApplication) application;
 
             log = persistedApplication.getLog();
-            if (log == null)
-                log = new BusLogImpl();
 
             result = persistedApplication.getProvider();
         }
         else
             Log.e(TAG, "Application does not implement PersistedApplication. Could not load provider.");
+
+        if (log == null)
+            log = new BusLogImpl();
 
         if (result == null)
             throw new RuntimeException("No PersistenceProvider was found");
@@ -345,18 +346,17 @@ public class SuperbusProcessor
 
     public CommandPurgePolicy checkLoadCommandPurgePolicy(Application application)
     {
+        CommandPurgePolicy purgePolicy = null;
+
         if (application instanceof PersistedApplication)
         {
             PersistedApplication persistedApplication = (PersistedApplication) application;
-
-            CommandPurgePolicy purgePolicy = persistedApplication.getCommandPurgePolicy();
-
-            if (purgePolicy == null)
-                purgePolicy = new TransientMethuselahCommandPurgePolicy();
-
-            return purgePolicy;
+            purgePolicy = persistedApplication.getCommandPurgePolicy();
         }
 
-        return null;
+        if (purgePolicy == null)
+            purgePolicy = new TransientMethuselahCommandPurgePolicy();
+
+        return purgePolicy;
     }
 }

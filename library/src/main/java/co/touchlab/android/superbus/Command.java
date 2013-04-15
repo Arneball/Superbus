@@ -226,4 +226,10 @@ public abstract class Command implements Comparable<Command>, Serializable
         PersistedApplication persistedApplication = (PersistedApplication) context.getApplicationContext();
         persistedApplication.getProvider().put(context, this);
     }
+
+    public void removeSelf(Context context) throws StorageException
+    {
+        PersistedApplication persistedApplication = (PersistedApplication) context.getApplicationContext();
+        persistedApplication.getProvider().removeFromQueue(this);
+    }
 }

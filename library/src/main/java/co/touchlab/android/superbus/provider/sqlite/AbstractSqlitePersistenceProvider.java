@@ -117,6 +117,13 @@ public abstract class AbstractSqlitePersistenceProvider extends AbstractStoredPe
     }
 
     @Override
+    public synchronized void removeFromQueue(Command c) throws StorageException
+    {
+        super.removeFromQueue(c);
+        removeCommand(c);
+    }
+
+    @Override
     protected void removeCommand(Command command) throws StorageException
     {
         if(command instanceof SqliteCommand)
