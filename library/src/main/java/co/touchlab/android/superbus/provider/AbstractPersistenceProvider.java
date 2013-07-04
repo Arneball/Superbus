@@ -8,7 +8,9 @@ import co.touchlab.android.superbus.SuperbusService;
 import co.touchlab.android.superbus.log.BusLog;
 import co.touchlab.android.superbus.utils.UiThreadContext;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
+import java.util.PriorityQueue;
 
 /**
  * Base class for implementing PersistenceProvider.  Unless you have something REALLY strange,
@@ -101,7 +103,7 @@ public abstract class AbstractPersistenceProvider implements PersistenceProvider
             commandQueue.add(c);
         }
 
-        if(busRestart)
+        if(busRestart && context != null)//Check context isn't null for testing
             SuperbusService.notifyStart(context);
     }
 

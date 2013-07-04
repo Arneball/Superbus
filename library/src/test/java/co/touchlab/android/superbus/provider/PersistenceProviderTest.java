@@ -18,26 +18,109 @@ import org.junit.Test;
  */
 public class PersistenceProviderTest
 {
-   /* @Test
+    @Test
+    public void testCountQuery() throws StorageException, InterruptedException
+    {
+        MemoryPersistenceProvider provider = new MemoryPersistenceProvider(new NullBusLog());
+
+        provider.put(null, new FirstTypeCommand(1));
+        provider.put(null, new FirstTypeCommand(3));
+        provider.put(null, new FirstTypeCommand(5));
+        provider.put(null, new FirstTypeCommand(7));
+        provider.put(null, new FirstTypeCommand(1));
+        provider.put(null, new FirstTypeCommand(3));
+        provider.put(null, new FirstTypeCommand(5));
+        provider.put(null, new FirstTypeCommand(7));
+        provider.put(null, new FirstTypeCommand(1));
+        provider.put(null, new FirstTypeCommand(3));
+        provider.put(null, new FirstTypeCommand(5));
+        provider.put(null, new FirstTypeCommand(7));
+        provider.put(null, new FirstTypeCommand(1));
+        provider.put(null, new FirstTypeCommand(3));
+        provider.put(null, new FirstTypeCommand(5));
+        provider.put(null, new FirstTypeCommand(7));
+        provider.put(null, new FirstTypeCommand(1));
+        provider.put(null, new FirstTypeCommand(3));
+        provider.put(null, new FirstTypeCommand(5));
+        provider.put(null, new FirstTypeCommand(7));
+        provider.put(null, new FirstTypeCommand(1));
+        provider.put(null, new FirstTypeCommand(3));
+        provider.put(null, new FirstTypeCommand(5));
+        provider.put(null, new FirstTypeCommand(7));
+        provider.put(null, new FirstTypeCommand(1));
+        provider.put(null, new FirstTypeCommand(3));
+        provider.put(null, new FirstTypeCommand(5));
+        provider.put(null, new FirstTypeCommand(7));
+
+        CountQuery query = new CountQuery();
+        provider.queryAll(query);
+
+        Assert.assertEquals(query.count, 7);
+    }
+
+    public static class CountQuery implements CommandQuery
+    {
+        int count = 0;
+
+        @Override
+        public void runQuery(Command c)
+        {
+            if(((FirstTypeCommand)c).aValue == 3)
+                count++;
+        }
+    }
+
+    public static class FirstTypeCommand extends Command
+    {
+        int aValue;
+
+        public FirstTypeCommand()
+        {
+        }
+
+        public FirstTypeCommand(int aValue)
+        {
+            this.aValue = aValue;
+        }
+
+        @Override
+        public String logSummary()
+        {
+            return "The val: "+ aValue;
+        }
+
+        @Override
+        public boolean same(Command command)
+        {
+            return false;
+        }
+
+        @Override
+        public void callCommand(Context context) throws TransientException, PermanentException
+        {
+            System.out.println("Doing things: "+ aValue);
+        }
+    }
+
+    @Test
     public void testPriorityOrder() throws StorageException, InterruptedException
     {
         MemoryPersistenceProvider provider = new MemoryPersistenceProvider(new NullBusLog());
 
-        provider.unstageCurrent(null, new DefaultPriorityCommand(Command.DEFAULT_PRIORITY));
+        provider.put(null, new DefaultPriorityCommand(Command.DEFAULT_PRIORITY));
         Thread.sleep(100);
         DefaultPriorityCommand lowest = new DefaultPriorityCommand(Command.LOWER_PRIORITY);
-        provider.unstageCurrent(null, lowest);
+        provider.put(null, lowest);
         Thread.sleep(100);
-        provider.unstageCurrent(null, new DefaultPriorityCommand(Command.DEFAULT_PRIORITY));
+        provider.put(null, new DefaultPriorityCommand(Command.DEFAULT_PRIORITY));
         Thread.sleep(100);
-        provider.unstageCurrent(null, new DefaultPriorityCommand(Command.HIGHER_PRIORITY));
+        provider.put(null, new DefaultPriorityCommand(Command.HIGHER_PRIORITY));
         Thread.sleep(100);
-        provider.unstageCurrent(null, new DefaultPriorityCommand(Command.DEFAULT_PRIORITY));
+        provider.put(null, new DefaultPriorityCommand(Command.DEFAULT_PRIORITY));
         Thread.sleep(100);
-        provider.unstageCurrent(null, new DefaultPriorityCommand(Command.MUCH_HIGHER_PRIORITY));
+        provider.put(null, new DefaultPriorityCommand(Command.MUCH_HIGHER_PRIORITY));
         Thread.sleep(100);
-        provider.unstageCurrent(null, new DefaultPriorityCommand(Command.DEFAULT_PRIORITY));
-
+        provider.put(null, new DefaultPriorityCommand(Command.DEFAULT_PRIORITY));
 
         int lastPriority = Integer.MAX_VALUE;
         long lastTime = 0l;
@@ -56,6 +139,8 @@ public class PersistenceProviderTest
 
             lastPriority = priority;
             lastTime = command.getAdded();
+
+            provider.removeCurrent(command);
         }
 
     }
@@ -84,5 +169,5 @@ public class PersistenceProviderTest
         {
 
         }
-    }*/
+    }
 }

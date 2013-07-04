@@ -4,7 +4,6 @@ import android.content.Context;
 import co.touchlab.android.superbus.Command;
 import co.touchlab.android.superbus.StorageException;
 
-import java.util.Collection;
 import java.util.Map;
 
 /**

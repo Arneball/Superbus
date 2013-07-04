@@ -1,6 +1,7 @@
 package co.touchlab.android.superbus;
 
 import android.app.Application;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.os.Handler;
@@ -28,8 +29,9 @@ public class SuperbusProcessor
     private Handler mainThreadHandler;
     private Service parentService;
     private Application appContext;
-    
-    void init(Service parentService)
+    private ForegroundNotificationManager foregroundNotificationManager;
+
+    void init(Service parentService) throws ConfigException
     {
         this.appContext = parentService.getApplication();
         this.parentService = parentService;
@@ -118,13 +120,21 @@ public class SuperbusProcessor
                     logCommandDebug(c, "[CommandThread]");
                     log.d(TAG, "Command [" + c.getClass().getSimpleName() + "] started: " + System.currentTimeMillis());
 
+                    if(foregroundNotificationManager != null)
+                    {
+                         final NotificationManager notificationManager = (NotificationManager) parentService.getApplicationContext()
+                                                .getSystemService(parentService.getApplicationContext().NOTIFICATION_SERVICE);
+
+                         notificationManager.notify(foregroundNotificationManager.notificationId(), foregroundNotificationManager.updateNotification(parentService));
+                    }
+
                     long delaySleep = 0l;
 
                     try
                     {
                         callCommand(c);
-                        c.onSuccess(appContext);
                         provider.removeCurrent(c);
+                        c.onSuccess(appContext);
                         transientCount = 0;
                     }
                     catch (TransientException e)
@@ -139,8 +149,8 @@ public class SuperbusProcessor
                             if (purge)
                             {
                                 log.w(TAG, "Purging command on TransientException: {" + c.logSummary() + "}");
-                                c.onPermanentError(appContext, new PermanentException(e));
                                 provider.removeCurrent(c);
+                                c.onPermanentError(appContext, new PermanentException(e));
                             }
                             else
                             {
@@ -161,14 +171,14 @@ public class SuperbusProcessor
                         }
                         catch (StorageException e1)
                         {
-                            logPermanentException(c, e1);
                             provider.removeCurrent(c);
+                            logPermanentException(c, e1);
                         }
                     }
                     catch (Throwable e)
                     {
-                        logPermanentException(c, e);
                         provider.removeCurrent(c);
+                        logPermanentException(c, e);
                     }
 
                     if (delaySleep > 0)
@@ -264,6 +274,7 @@ public class SuperbusProcessor
      */
     private void stopService()
     {
+        allDone(appContext);
         parentService.stopSelf();
     }
 
@@ -272,7 +283,7 @@ public class SuperbusProcessor
         thread = null;
     }
 
-    void addDone(Context context)
+    void allDone(Context context)
     {
         try
         {
@@ -301,7 +312,7 @@ public class SuperbusProcessor
      * @param application The Application object.
      * @return Some implementation of PersistenceProvider.
      */
-    public PersistenceProvider checkLoadProvider(Application application)
+    public PersistenceProvider checkLoadProvider(Application application) throws ConfigException
     {
         PersistenceProvider result = null;
 
@@ -310,6 +321,11 @@ public class SuperbusProcessor
             PersistedApplication persistedApplication = (PersistedApplication) application;
 
             log = persistedApplication.getLog();
+
+            foregroundNotificationManager = persistedApplication.getForegroundNotificationManager();
+
+            if(foregroundNotificationManager != null && foregroundNotificationManager.notificationId() <= 0)
+                throw new ConfigException("Foreground notification id should be greater than 0");
 
             result = persistedApplication.getProvider();
         }

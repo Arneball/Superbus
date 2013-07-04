@@ -51,7 +51,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="superbus" target="1.5" />
+      <module name="superbus" target="1.6" />
       <module name="touchtrack-android" target="1.5" />
     </bytecodeTargetLevel>
   </component>

@@ -1,6 +1,7 @@
 package co.touchlab.android.superbus.provider;
 
 import co.touchlab.android.superbus.CommandPurgePolicy;
+import co.touchlab.android.superbus.ForegroundNotificationManager;
 import co.touchlab.android.superbus.SuperbusEventListener;
 import co.touchlab.android.superbus.log.BusLog;
 
@@ -33,4 +34,10 @@ public interface PersistedApplication
      * @return Return a custom purge policy. Can be null.
      */
     CommandPurgePolicy getCommandPurgePolicy();
+
+    /**
+     * Manage foreground service updates.  Can be null.
+     * @return
+     */
+    ForegroundNotificationManager getForegroundNotificationManager();
 }

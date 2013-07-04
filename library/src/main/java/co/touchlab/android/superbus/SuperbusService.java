@@ -1,17 +1,16 @@
 package co.touchlab.android.superbus;
 
 import android.app.Application;
+import android.app.Notification;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
-import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import co.touchlab.android.superbus.log.BusLog;
 import co.touchlab.android.superbus.log.BusLogImpl;
 import co.touchlab.android.superbus.provider.PersistedApplication;
-import co.touchlab.android.superbus.provider.PersistenceProvider;
 
 /**
  * The heart of the command bus.  Processes commands.
@@ -25,6 +24,7 @@ public class SuperbusService extends Service
     private SuperbusProcessor processor;
     private BusLog log;
     public static final String TAG = SuperbusService.class.getSimpleName();
+    private ForegroundNotificationManager foregroundNotificationManager;
 
     public class LocalBinder extends Binder
     {
@@ -49,7 +49,14 @@ public class SuperbusService extends Service
 
         checkLoadLog(getApplication());
         processor = new SuperbusProcessor();
-        processor.init(this);
+        try
+        {
+            processor.init(this);
+        }
+        catch (ConfigException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -76,6 +83,34 @@ public class SuperbusService extends Service
             log = persistedApplication.getLog();
             if (log == null)
                 log = new BusLogImpl();
+
+            foregroundNotificationManager = persistedApplication.getForegroundNotificationManager();
+            if(foregroundNotificationManager == null)
+                foregroundNotificationManager = new ForegroundNotificationManager()
+                {
+                    @Override
+                    public boolean isForeground()
+                    {
+                        return false;
+                    }
+
+                    @Override
+                    public Notification updateNotification(Context superbusService)
+                    {
+                        return null;
+                    }
+
+                    @Override
+                    public int notificationId()
+                    {
+                        return 24601;
+                    }
+                };
+
+            if(foregroundNotificationManager.isForeground())
+            {
+                startForeground(foregroundNotificationManager.notificationId(), foregroundNotificationManager.updateNotification(this));
+            }
         }
         else
             Log.e(TAG, "Application does not implement PersistedApplication. Could not load provider.");
