@@ -12,7 +12,7 @@ import co.touchlab.android.superbus.StorageException;
  */
 public interface StoredCommandAdapter
 {
-    Command inflateCommand(String data, String className) throws StorageException;
+    Command inflateCommand(String data, String className) throws StorageException, ClassNotFoundException;
 
     String storeCommand(Command command) throws StorageException;
 }

@@ -16,7 +16,7 @@ import org.json.JSONTokener;
 public class JsonStoredCommandAdapter implements StoredCommandAdapter
 {
     @Override
-    public Command inflateCommand(String data, String className) throws StorageException
+    public Command inflateCommand(String data, String className) throws StorageException, ClassNotFoundException
     {
         try
         {
@@ -25,6 +25,10 @@ public class JsonStoredCommandAdapter implements StoredCommandAdapter
             JsonCommand jsonCommand = (JsonCommand) o;
             jsonCommand.inflate(json);
             return jsonCommand;
+        }
+        catch (ClassNotFoundException e)
+        {
+            throw e;
         }
         catch (Exception e)
         {

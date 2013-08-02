@@ -30,11 +30,15 @@ public class GsonSqlitePersistenceProvider extends AbstractSqlitePersistenceProv
     }
 
     @Override
-    protected SqliteCommand inflateCommand(String commandData, String className) throws StorageException
+    protected SqliteCommand inflateCommand(String commandData, String className) throws StorageException, ClassNotFoundException
     {
         try
         {
             return (SqliteCommand) commandAdapter.inflateCommand(commandData, className);
+        }
+        catch (ClassNotFoundException e)
+        {
+            throw e;
         }
         catch (StorageException e)
         {

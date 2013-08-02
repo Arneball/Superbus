@@ -32,6 +32,11 @@ public abstract class AbstractPersistenceProvider implements PersistenceProvider
         this.log = log;
     }
 
+    public BusLog getLog()
+    {
+        return log;
+    }
+
     @Override
     public final synchronized void put(final Context context, final Command c) throws StorageException
     {

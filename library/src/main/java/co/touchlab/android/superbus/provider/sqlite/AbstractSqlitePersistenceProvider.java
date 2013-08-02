@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import co.touchlab.android.superbus.Command;
 import co.touchlab.android.superbus.StorageException;
+import co.touchlab.android.superbus.SuperbusProcessor;
 import co.touchlab.android.superbus.log.BusLog;
 import co.touchlab.android.superbus.provider.AbstractStoredPersistenceProvider;
 
@@ -57,7 +58,9 @@ public abstract class AbstractSqlitePersistenceProvider extends AbstractStoredPe
 
                 while (cursor.moveToNext())
                 {
-                    commands.add(loadFromCursor(cursor));
+                    SqliteCommand command = loadFromCursor(cursor);
+                    if(command != null)
+                        commands.add(command);
                 }
             }
             finally
@@ -156,14 +159,19 @@ public abstract class AbstractSqlitePersistenceProvider extends AbstractStoredPe
         }
         catch (Exception e)
         {
-            if(e instanceof StorageException)
+            if(e instanceof ClassNotFoundException)
+            {
+                getLog().e(SuperbusProcessor.TAG, "Class cast on load. Nothing to do here. Be more careful.", e);
+                return null;
+            }
+            else if(e instanceof StorageException)
                 throw e;
             else
                 throw new StorageException(e);
         }
     }
 
-    protected abstract SqliteCommand inflateCommand(String commandData, String className) throws StorageException;
+    protected abstract SqliteCommand inflateCommand(String commandData, String className) throws StorageException, ClassNotFoundException;
 
     protected abstract String serializeCommand(SqliteCommand command)throws StorageException;
 

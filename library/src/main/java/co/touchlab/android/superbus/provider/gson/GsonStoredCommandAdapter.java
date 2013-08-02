@@ -15,12 +15,16 @@ import com.google.gson.Gson;
 public class GsonStoredCommandAdapter implements StoredCommandAdapter
 {
     @Override
-    public Command inflateCommand(String data, String className) throws StorageException
+    public Command inflateCommand(String data, String className) throws StorageException, ClassNotFoundException
     {
         try
         {
             Object returnedCommand = new Gson().fromJson(data, Class.forName(className));
             return (Command) returnedCommand;
+        }
+        catch (ClassNotFoundException e)
+        {
+            throw e;
         }
         catch (Exception e)
         {
