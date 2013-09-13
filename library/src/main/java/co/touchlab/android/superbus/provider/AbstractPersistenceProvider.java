@@ -94,15 +94,18 @@ public abstract class AbstractPersistenceProvider implements PersistenceProvider
             }
         }
 
-        if(!duplicate && persist)
+        if(!duplicate)
         {
-            try
+            if(persist)
             {
-                persistCommand(context, c);
-            }
-            catch (StorageException e)
-            {
-                throw new RuntimeException(e);
+                try
+                {
+                    persistCommand(context, c);
+                }
+                catch (StorageException e)
+                {
+                    throw new RuntimeException(e);
+                }
             }
 
             commandQueue.add(c);
