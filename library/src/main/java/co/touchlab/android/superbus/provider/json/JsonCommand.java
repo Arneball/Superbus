@@ -1,6 +1,6 @@
 package co.touchlab.android.superbus.provider.json;
 
-import co.touchlab.android.superbus.provider.sqlite.SqliteCommand;
+import co.touchlab.android.superbus.Command;
 import org.json.JSONObject;
 
 /**
@@ -12,7 +12,7 @@ import org.json.JSONObject;
  * Date: 10/11/12
  * Time: 3:35 AM
  */
-public abstract class JsonCommand extends SqliteCommand
+public abstract class JsonCommand extends Command
 {
     public abstract void inflate(JSONObject json);
 

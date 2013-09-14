@@ -27,90 +27,12 @@ import java.util.List;
  */
 public abstract class AbstractSqlitePersistenceProvider extends AbstractStoredPersistenceProvider
 {
-    public static final String TABLE_NAME = "__SQL_PERS_PROV";
-    public static final String COLUMNS = "id INTEGER PRIMARY KEY AUTOINCREMENT, type VARCHAR, commandData VARCHAR";
-    public static final String[] COLUMN_LIST = {"id", "type", "commandData"};
+
 
     private SQLiteDatabaseFactory databaseFactory;
 
-    public AbstractSqlitePersistenceProvider(SQLiteDatabaseFactory databaseFactory, BusLog log) throws StorageException
-    {
-        super(log);
-        this.databaseFactory = databaseFactory;
-    }
-
     @Override
-    public Collection<? extends Command> loadAll() throws StorageException
-    {
-        try
-        {
-//            TODO: Replace for sqlcipher
-//            SQLiteDatabaseIntf db = databaseFactory.getDatabase();
-//            Cursor cursor = db.query(TABLE_NAME, COLUMN_LIST);
 
-            SQLiteDatabase db = databaseFactory.getDatabase();
-            Cursor cursor = db.query(TABLE_NAME, COLUMN_LIST, null, null, null, null, null, null);
-
-            List<Command> commands = null;
-            try
-            {
-                commands = new ArrayList<Command>();
-
-                while (cursor.moveToNext())
-                {
-                    SqliteCommand command = loadFromCursor(cursor);
-                    if(command != null)
-                        commands.add(command);
-                }
-            }
-            finally
-            {
-                cursor.close();
-            }
-
-            return commands;
-        }
-        catch (Exception e)
-        {
-            throw new StorageException(e);
-        }
-    }
-
-    @Override
-    public void persistCommand(Context context, Command command) throws StorageException
-    {
-        if(command instanceof SqliteCommand)
-        {
-            //Sanity check. StoredCommand classes need a no-arg constructor
-            checkNoArg(command);
-
-            SqliteCommand sqliteCommand = (SqliteCommand) command;
-
-            try
-            {
-                String commandData = serializeCommand(sqliteCommand);
-
-                ContentValues values = new ContentValues();
-
-                values.put("type", command.getClass().getName());
-                values.put("commandData", commandData);
-
-                long newRowId = databaseFactory.getDatabase().insertOrThrow(
-                        TABLE_NAME, "type", values
-                );
-
-                sqliteCommand.setId(newRowId);
-            }
-            catch (StorageException e)
-            {
-                throw e;
-            }
-            catch (Exception e)
-            {
-                throw new StorageException(e);
-            }
-        }
-    }
 
     @Override
     public void removeCurrent(Command c) throws StorageException
@@ -127,61 +49,11 @@ public abstract class AbstractSqlitePersistenceProvider extends AbstractStoredPe
     }
 
     @Override
-    protected void removeCommand(Command command) throws StorageException
-    {
-        if(command instanceof SqliteCommand)
-        {
-            try
-            {
-                SqliteCommand sqliteCommand = (SqliteCommand) command;
-                databaseFactory.getDatabase().delete(TABLE_NAME, "id = ?", new String[]{sqliteCommand.getId().toString()});
-            }
-            catch (Exception e)
-            {
-                throw new StorageException(e);
-            }
-        }
-    }
 
-    private SqliteCommand loadFromCursor(Cursor c) throws Exception
-    {
-        try
-        {
-            long id = c.getLong(0);
-            String type = c.getString(1);
-            String commandData = c.getString(2);
 
-            SqliteCommand storedCommand = inflateCommand(commandData, type);
+    protected abstract Command inflateCommand(String commandData, String className) throws StorageException, ClassNotFoundException;
 
-            storedCommand.setId(id);
+    protected abstract String serializeCommand(Command command)throws StorageException;
 
-            return storedCommand;
-        }
-        catch (Exception e)
-        {
-            if(e instanceof ClassNotFoundException)
-            {
-                getLog().e(SuperbusProcessor.TAG, "Class cast on load. Nothing to do here. Be more careful.", e);
-                return null;
-            }
-            else if(e instanceof StorageException)
-                throw e;
-            else
-                throw new StorageException(e);
-        }
-    }
 
-    protected abstract SqliteCommand inflateCommand(String commandData, String className) throws StorageException, ClassNotFoundException;
-
-    protected abstract String serializeCommand(SqliteCommand command)throws StorageException;
-
-    public void createTables(SQLiteDatabase database)
-    {
-        database.execSQL("create table "+ TABLE_NAME +" ("+ COLUMNS +")");
-    }
-
-    public void dropTables(SQLiteDatabase database)
-    {
-        database.execSQL("drop table "+ TABLE_NAME);
-    }
 }

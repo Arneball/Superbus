@@ -18,7 +18,7 @@ public class JsonStoredCommandAdapter implements StoredCommandAdapter
     @Override
     public Command inflateCommand(String data, String className) throws StorageException, ClassNotFoundException
     {
-        try
+        /*try
         {
             JSONObject json= (JSONObject) new JSONTokener(data).nextValue();
             Object o = Class.forName(className).newInstance();
@@ -33,14 +33,16 @@ public class JsonStoredCommandAdapter implements StoredCommandAdapter
         catch (Exception e)
         {
             throw new StorageException(e);
-        }
+        }*/
+        throw new UnsupportedOperationException("Need to figure this out");
     }
 
     @Override
     public String storeCommand(Command command) throws StorageException
     {
-        JSONObject json = new JSONObject();
+        /*JSONObject json = new JSONObject();
         ((JsonCommand)command).store(json);
-        return json.toString();
+        return json.toString();*/
+        throw new UnsupportedOperationException("Need to figure this out");
     }
 }

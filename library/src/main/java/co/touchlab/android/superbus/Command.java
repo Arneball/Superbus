@@ -232,4 +232,16 @@ public abstract class Command implements Comparable<Command>, Serializable
         PersistedApplication persistedApplication = (PersistedApplication) context.getApplicationContext();
         persistedApplication.getProvider().removeFromQueue(this);
     }
+
+    private Long id;
+
+    public Long getId()
+    {
+        return id;
+    }
+
+    public void setId(Long id)
+    {
+        this.id = id;
+    }
 }
