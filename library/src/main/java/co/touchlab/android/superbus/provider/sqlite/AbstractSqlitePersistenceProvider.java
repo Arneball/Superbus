@@ -1,18 +1,8 @@
 package co.touchlab.android.superbus.provider.sqlite;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import co.touchlab.android.superbus.Command;
 import co.touchlab.android.superbus.StorageException;
-import co.touchlab.android.superbus.SuperbusProcessor;
-import co.touchlab.android.superbus.log.BusLog;
-import co.touchlab.android.superbus.provider.AbstractStoredPersistenceProvider;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import co.touchlab.android.superbus.provider.CommandPersistenceProvider;
 
 /**
  * THIS IS NOT READY.  Coming soon.
@@ -25,7 +15,7 @@ import java.util.List;
  * Date: 8/24/12
  * Time: 1:12 AM
  */
-public abstract class AbstractSqlitePersistenceProvider extends AbstractStoredPersistenceProvider
+public abstract class AbstractSqlitePersistenceProvider extends CommandPersistenceProvider
 {
 
 

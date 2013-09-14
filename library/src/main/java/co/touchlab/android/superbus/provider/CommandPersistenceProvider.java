@@ -24,7 +24,7 @@ import java.util.*;
  * Time: 5:16 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class AbstractStoredPersistenceProvider implements PersistenceProvider
+public abstract class CommandPersistenceProvider
 {
     public static final String TABLE_NAME = "__SQL_PERS_PROV";
     public static final String COLUMNS = "id INTEGER PRIMARY KEY AUTOINCREMENT, type VARCHAR, commandData VARCHAR";
@@ -38,7 +38,7 @@ public abstract class AbstractStoredPersistenceProvider implements PersistencePr
     private final PriorityQueue<Command> commandQueue = new PriorityQueue<Command>();
     private boolean initCalled = false;
 
-    protected AbstractStoredPersistenceProvider(SQLiteDatabaseFactory databaseFactory, StoredCommandAdapter storedCommandAdapter, BusLog log)
+    protected CommandPersistenceProvider(SQLiteDatabaseFactory databaseFactory, StoredCommandAdapter storedCommandAdapter, BusLog log)
     {
         this.databaseFactory = databaseFactory;
         this.storedCommandAdapter = storedCommandAdapter;
@@ -156,6 +156,7 @@ public abstract class AbstractStoredPersistenceProvider implements PersistencePr
         try
         {
             databaseFactory.getDatabase().delete(TABLE_NAME, "id = ?", new String[]{command.getId().toString()});
+            commandQueue.remove(command);
         }
         catch (Exception e)
         {

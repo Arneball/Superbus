@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.util.Log;
 import co.touchlab.android.superbus.log.BusLog;
 import co.touchlab.android.superbus.log.BusLogImpl;
+import co.touchlab.android.superbus.provider.CommandPersistenceProvider;
 import co.touchlab.android.superbus.provider.PersistedApplication;
 import co.touchlab.android.superbus.provider.PersistenceProvider;
 
@@ -22,7 +23,7 @@ public class SuperbusProcessor
 {
     public static final String TAG = SuperbusProcessor.class.getSimpleName();
     private CommandThread thread;
-    private PersistenceProvider provider;
+    private CommandPersistenceProvider provider;
     private SuperbusEventListener eventListener;
     private CommandPurgePolicy commandPurgePolicy;
     private BusLog log;
@@ -67,27 +68,6 @@ public class SuperbusProcessor
         }
     }
 
-    /**
-     * Gets the next item from the provider that should be processed.
-     *
-     * @return null if an exception occurs or there are no more items.
-     */
-    private synchronized Command grabTop()
-    {
-        try
-        {
-            provider.logPersistenceState();
-            return provider.stageCurrent();
-        }
-        catch (StorageException e)
-        {
-            //TODO: A StorageException here should really trigger a command removal.
-
-            log.e(TAG, null, e);
-            return null;
-        }
-    }
-
     protected synchronized void checkAndStart()
     {
         if (thread == null)
@@ -109,33 +89,33 @@ public class SuperbusProcessor
             boolean forceShutdown;
             try
             {
-                int transientCount = 0;
                 forceShutdown = false;
 
                 if (eventListener != null)
                     eventListener.onBusStarted(appContext, provider);
 
-                while ((c = grabTop()) != null)
+                provider.logPersistenceState();
+
+                while ((c = provider.readTop()) != null)
                 {
                     logCommandDebug(c, "[CommandThread]");
-                    log.d(TAG, "Command [" + c.getClass().getSimpleName() + "] started: " + System.currentTimeMillis());
 
                     if(foregroundNotificationManager != null)
                     {
-                         final NotificationManager notificationManager = (NotificationManager) parentService.getApplicationContext()
-                                                .getSystemService(parentService.getApplicationContext().NOTIFICATION_SERVICE);
+                         final NotificationManager notificationManager = (NotificationManager) parentService.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
                          notificationManager.notify(foregroundNotificationManager.notificationId(), foregroundNotificationManager.updateNotification(parentService));
                     }
 
-                    long delaySleep = 0l;
-
                     try
                     {
                         callCommand(c);
-                        provider.removeCurrent(c);
+
+                        //TODO: need to deal with failure of save
+                        provider.removeCommand(c);
+
+                        //TODO: need to deal with failure of callback
                         c.onSuccess(appContext);
-                        transientCount = 0;
                     }
                     catch (TransientException e)
                     {
@@ -149,48 +129,27 @@ public class SuperbusProcessor
                             if (purge)
                             {
                                 log.w(TAG, "Purging command on TransientException: {" + c.logSummary() + "}");
-                                provider.removeCurrent(c);
+                                provider.removeCommand(c);
                                 c.onPermanentError(appContext, new PermanentException(e));
                             }
                             else
                             {
-                                log.i(TAG, "Reset command on TransientException: {" + c.logSummary() + "}");
-                                provider.unstageCurrent(appContext, c);
                                 c.onTransientError(appContext, e);
                             }
 
-                            delaySleep = 2000;
-                            transientCount++;
-
-                            //If we have several transient exceptions in a row, break and sleep.
-                            if (transientCount >= 2)
-                            {
-                                forceShutdown = true;
-                                break;
-                            }
+                            forceShutdown = true;
+                            break;
                         }
                         catch (StorageException e1)
                         {
-                            provider.removeCurrent(c);
+                            provider.removeCommand(c);
                             logPermanentException(c, e1);
                         }
                     }
                     catch (Throwable e)
                     {
-                        provider.removeCurrent(c);
+                        provider.removeCommand(c);
                         logPermanentException(c, e);
-                    }
-
-                    if (delaySleep > 0)
-                    {
-                        try
-                        {
-                            Thread.sleep(delaySleep);
-                        }
-                        catch (InterruptedException e1)
-                        {
-                            log.e(TAG, null, e1);
-                        }
                     }
 
                     log.d(TAG, "Command [" + c.getClass().getSimpleName() + "] ended: " + System.currentTimeMillis());
@@ -312,9 +271,9 @@ public class SuperbusProcessor
      * @param application The Application object.
      * @return Some implementation of PersistenceProvider.
      */
-    public PersistenceProvider checkLoadProvider(Application application) throws ConfigException
+    public CommandPersistenceProvider checkLoadProvider(Application application) throws ConfigException
     {
-        PersistenceProvider result = null;
+        CommandPersistenceProvider result;
 
         if (application instanceof PersistedApplication)
         {
@@ -330,13 +289,10 @@ public class SuperbusProcessor
             result = persistedApplication.getProvider();
         }
         else
-            Log.e(TAG, "Application does not implement PersistedApplication. Could not load provider.");
+            throw new RuntimeException("No PersistenceProvider was found");
 
         if (log == null)
             log = new BusLogImpl();
-
-        if (result == null)
-            throw new RuntimeException("No PersistenceProvider was found");
 
         return result;
     }
