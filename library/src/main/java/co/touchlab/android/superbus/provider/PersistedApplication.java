@@ -18,7 +18,7 @@ public interface PersistedApplication
     /**
      * @return The PersistenceProvider of your choice.  May I recommend GsonPersistenceProvider?
      */
-    PersistenceProvider getProvider();
+    CommandPersistenceProvider getProvider();
 
     /**
      * @return Log implementation.  If left null, the LogCat default will be used.

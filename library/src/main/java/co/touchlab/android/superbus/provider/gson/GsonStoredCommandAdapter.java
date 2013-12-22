@@ -2,7 +2,7 @@ package co.touchlab.android.superbus.provider.gson;
 
 import co.touchlab.android.superbus.Command;
 import co.touchlab.android.superbus.StorageException;
-import co.touchlab.android.superbus.provider.stringbased.StoredCommandAdapter;
+import co.touchlab.android.superbus.provider.StoredCommandAdapter;
 import com.google.gson.Gson;
 
 /**

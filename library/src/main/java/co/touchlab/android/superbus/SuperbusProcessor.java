@@ -5,12 +5,10 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
 import co.touchlab.android.superbus.log.BusLog;
 import co.touchlab.android.superbus.log.BusLogImpl;
 import co.touchlab.android.superbus.provider.CommandPersistenceProvider;
 import co.touchlab.android.superbus.provider.PersistedApplication;
-import co.touchlab.android.superbus.provider.PersistenceProvider;
 
 /**
  * Created with IntelliJ IDEA.
@@ -103,7 +101,6 @@ public class SuperbusProcessor
                     if(foregroundNotificationManager != null)
                     {
                          final NotificationManager notificationManager = (NotificationManager) parentService.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-
                          notificationManager.notify(foregroundNotificationManager.notificationId(), foregroundNotificationManager.updateNotification(parentService));
                     }
 
@@ -134,6 +131,7 @@ public class SuperbusProcessor
                             }
                             else
                             {
+                                provider.updateCommand(c);
                                 c.onTransientError(appContext, e);
                             }
 

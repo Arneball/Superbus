@@ -230,7 +230,7 @@ public abstract class Command implements Comparable<Command>, Serializable
     public void removeSelf(Context context) throws StorageException
     {
         PersistedApplication persistedApplication = (PersistedApplication) context.getApplicationContext();
-        persistedApplication.getProvider().removeFromQueue(this);
+        persistedApplication.getProvider().removeCommand(this);
     }
 
     private Long id;

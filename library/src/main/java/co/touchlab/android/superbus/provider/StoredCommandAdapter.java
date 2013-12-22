@@ -1,4 +1,4 @@
-package co.touchlab.android.superbus.provider.stringbased;
+package co.touchlab.android.superbus.provider;
 
 import co.touchlab.android.superbus.Command;
 import co.touchlab.android.superbus.StorageException;

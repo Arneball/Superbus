@@ -11,7 +11,6 @@ import co.touchlab.android.superbus.SuperbusProcessor;
 import co.touchlab.android.superbus.SuperbusService;
 import co.touchlab.android.superbus.log.BusLog;
 import co.touchlab.android.superbus.provider.sqlite.SQLiteDatabaseFactory;
-import co.touchlab.android.superbus.provider.stringbased.StoredCommandAdapter;
 import co.touchlab.android.superbus.utils.UiThreadContext;
 
 import java.lang.reflect.Constructor;
@@ -24,7 +23,7 @@ import java.util.*;
  * Time: 5:16 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class CommandPersistenceProvider
+public class CommandPersistenceProvider
 {
     public static final String TABLE_NAME = "__SQL_PERS_PROV";
     public static final String COLUMNS = "id INTEGER PRIMARY KEY AUTOINCREMENT, type VARCHAR, commandData VARCHAR";
@@ -38,6 +37,8 @@ public abstract class CommandPersistenceProvider
     private final PriorityQueue<Command> commandQueue = new PriorityQueue<Command>();
     private boolean initCalled = false;
 
+    private Command top;
+
     protected CommandPersistenceProvider(SQLiteDatabaseFactory databaseFactory, StoredCommandAdapter storedCommandAdapter, BusLog log)
     {
         this.databaseFactory = databaseFactory;
@@ -50,7 +51,6 @@ public abstract class CommandPersistenceProvider
         return log;
     }
 
-    @Override
     public final synchronized void put(final Context context, final Command c) throws StorageException
     {
         //There may be serious I/O going on here.  Assert we're OK for that.
@@ -88,8 +88,7 @@ public abstract class CommandPersistenceProvider
         SuperbusService.notifyStart(context);
     }
 
-    @Override
-    protected synchronized Command readTop() throws StorageException
+    public synchronized Command readTop() throws StorageException
     {
         loadInitialCommands();
         return commandQueue.peek();
@@ -102,12 +101,7 @@ public abstract class CommandPersistenceProvider
 
         try
         {
-            String commandData = storedCommandAdapter.storeCommand(command);
-
-            ContentValues values = new ContentValues();
-
-            values.put("type", command.getClass().getName());
-            values.put("commandData", commandData);
+            ContentValues values = prepCommandSave(command);
 
             long newRowId = databaseFactory.getDatabase().insertOrThrow(
                     TABLE_NAME, "type", values
@@ -123,6 +117,23 @@ public abstract class CommandPersistenceProvider
         {
             throw new StorageException(e);
         }
+    }
+
+    private ContentValues prepCommandSave(Command command) throws StorageException
+    {
+        String commandData = storedCommandAdapter.storeCommand(command);
+
+        ContentValues values = new ContentValues();
+
+        values.put("type", command.getClass().getName());
+        values.put("commandData", commandData);
+        return values;
+    }
+
+    public void updateCommand(Command command) throws StorageException
+    {
+        ContentValues values = prepCommandSave(command);
+        databaseFactory.getDatabase().update(TABLE_NAME, values, "id = ?", new String[]{command.getId().toString()});
     }
 
     protected void checkNoArg(Command command) throws StorageException
@@ -151,7 +162,7 @@ public abstract class CommandPersistenceProvider
         checkedCommandClasses.add(commandClass);
     }
 
-    protected void removeCommand(Command command) throws StorageException
+    public void removeCommand(Command command) throws StorageException
     {
         try
         {
@@ -208,7 +219,6 @@ public abstract class CommandPersistenceProvider
         }
     }
 
-    @Override
     public final synchronized void queryAll(CommandQuery query)
     {
         for (Command command : commandQueue)
@@ -217,14 +227,12 @@ public abstract class CommandPersistenceProvider
         }
     }
 
-    @Override
     public int getSize() throws StorageException
     {
-        loadInitialCommands();     //TODO: Not sure this is right
+        loadInitialCommands();
         return commandQueue.size();
     }
 
-    @Override
     public synchronized void logPersistenceState()
     {
         if (log.isLoggable(SuperbusService.TAG, Log.INFO))
@@ -270,10 +278,6 @@ public abstract class CommandPersistenceProvider
     {
         try
         {
-//            TODO: Replace for sqlcipher
-//            SQLiteDatabaseIntf db = databaseFactory.getDatabase();
-//            Cursor cursor = db.query(TABLE_NAME, COLUMN_LIST);
-
             SQLiteDatabase db = databaseFactory.getDatabase();
             Cursor cursor = db.query(TABLE_NAME, COLUMN_LIST, null, null, null, null, null, null);
 

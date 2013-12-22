@@ -4,7 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import co.touchlab.android.superbus.SuperbusEventListener;
-import co.touchlab.android.superbus.provider.PersistenceProvider;
+import co.touchlab.android.superbus.provider.CommandPersistenceProvider;
 
 /**
  * The bus can be set up to automatically continue processing when the network
@@ -19,19 +19,19 @@ import co.touchlab.android.superbus.provider.PersistenceProvider;
 public class ConnectionChangeBusEventListener implements SuperbusEventListener
 {
     @Override
-    public void onBusStarted(Context context, PersistenceProvider provider)
+    public void onBusStarted(Context context, CommandPersistenceProvider provider)
     {
 
     }
 
     @Override
-    public void onBusFinished(Context context, PersistenceProvider provider, boolean complete)
+    public void onBusFinished(Context context, CommandPersistenceProvider provider, boolean complete)
     {
         int flag=(complete ?
                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED:
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED);
 
-        ComponentName component=new ComponentName(context, ConnectionChangeReceiver.class);
+        ComponentName component = new ComponentName(context, ConnectionChangeReceiver.class);
 
         context.getPackageManager().setComponentEnabledSetting(component, flag, PackageManager.DONT_KILL_APP);
     }

@@ -24,7 +24,6 @@ public class SuperbusService extends Service
     private SuperbusProcessor processor;
     private BusLog log;
     public static final String TAG = SuperbusService.class.getSimpleName();
-    private ForegroundNotificationManager foregroundNotificationManager;
 
     public class LocalBinder extends Binder
     {
@@ -47,7 +46,7 @@ public class SuperbusService extends Service
     {
         super.onCreate();
 
-        checkLoadLog(getApplication());
+        initLogAndForeground(getApplication());
         processor = new SuperbusProcessor();
         try
         {
@@ -74,7 +73,7 @@ public class SuperbusService extends Service
         log.i(TAG, "onDestroy");
     }
 
-    public void checkLoadLog(Application application)
+    public void initLogAndForeground(Application application)
     {
         if (application instanceof PersistedApplication)
         {
@@ -84,8 +83,9 @@ public class SuperbusService extends Service
             if (log == null)
                 log = new BusLogImpl();
 
-            foregroundNotificationManager = persistedApplication.getForegroundNotificationManager();
-            if(foregroundNotificationManager == null)
+            ForegroundNotificationManager foregroundNotificationManager = persistedApplication.getForegroundNotificationManager();
+            if (foregroundNotificationManager == null)
+            {
                 foregroundNotificationManager = new ForegroundNotificationManager()
                 {
                     @Override
@@ -106,14 +106,17 @@ public class SuperbusService extends Service
                         return 24601;
                     }
                 };
+            }
 
-            if(foregroundNotificationManager.isForeground())
+            if (foregroundNotificationManager.isForeground())
             {
                 startForeground(foregroundNotificationManager.notificationId(), foregroundNotificationManager.updateNotification(this));
             }
         }
         else
+        {
             Log.e(TAG, "Application does not implement PersistedApplication. Could not load provider.");
+        }
     }
 
     /**
