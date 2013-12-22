@@ -166,12 +166,17 @@ public class CommandPersistenceProvider
     {
         try
         {
-            databaseFactory.getDatabase().delete(TABLE_NAME, "id = ?", new String[]{command.getId().toString()});
+            int removedCount = databaseFactory.getDatabase().delete(TABLE_NAME, "id = ?", new String[]{command.getId().toString()});
+            if(removedCount != 1)
+                throw new StorageException("Deleted count != 1, was "+ removedCount);
             commandQueue.remove(command);
         }
         catch (Exception e)
         {
-            throw new StorageException(e);
+            if(e instanceof StorageException)
+                throw (StorageException)e;
+            else
+                throw new StorageException(e);
         }
     }
 

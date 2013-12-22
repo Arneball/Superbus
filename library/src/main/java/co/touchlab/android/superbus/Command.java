@@ -41,6 +41,18 @@ public abstract class Command implements Comparable<Command>, Serializable
     private long added = System.currentTimeMillis();
     private int transientExceptionCount = 0;
 
+    private transient boolean commandRunning = false;
+
+    public boolean isCommandRunning()
+    {
+        return commandRunning;
+    }
+
+    public void setCommandRunning(boolean commandRunning)
+    {
+        this.commandRunning = commandRunning;
+    }
+
     /**
      * This is for your benefit.  Command info will be logged during various events.
      * @return String representation of the command.  Human readable.  Bus doesn't care what this is, but keep in mind common sense performance considerations.

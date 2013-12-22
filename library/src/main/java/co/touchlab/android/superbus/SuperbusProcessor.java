@@ -95,6 +95,7 @@ public class SuperbusProcessor
 
                 while ((c = provider.readTop()) != null)
                 {
+                    c.setCommandRunning(true);
                     logCommandDebug(c, "[CommandThread]");
 
                     if(foregroundNotificationManager != null)
@@ -130,6 +131,7 @@ public class SuperbusProcessor
                             }
                             else
                             {
+                                c.setCommandRunning(false);
                                 provider.updateCommand(c);
                                 c.onTransientError(appContext, e);
                             }
