@@ -17,53 +17,11 @@ import co.touchlab.android.superbus.provider.sqlite.SimpleDatabaseHelper;
  * Time: 5:54 PM
  * To change this template use File | Settings | File Templates.
  */
-public class SimplePersistedApplication extends Application implements PersistedApplication
+public class SimplePersistedApplication extends AbstractPersistedApplication
 {
-    private CommandPersistenceProvider persistenceProvider;
-
-    private final class LocalDatabaseFactory implements SQLiteDatabaseFactory
-    {
-        @Override
-        public SQLiteDatabaseIntf getDatabase()
-        {
-            return new ClearSQLiteDatabase(SimpleDatabaseHelper.getInstance(SimplePersistedApplication.this).getWritableDatabase());
-        }
-    }
-
     @Override
-    public void onCreate()
+    protected SQLiteDatabase getWritableDatabase()
     {
-        super.onCreate();
-        persistenceProvider = new CommandPersistenceProvider(new LocalDatabaseFactory(), new GsonStoredCommandAdapter(), null);
-    }
-
-    @Override
-    public CommandPersistenceProvider getProvider()
-    {
-        return persistenceProvider;
-    }
-
-    @Override
-    public BusLog getLog()
-    {
-        return null;
-    }
-
-    @Override
-    public SuperbusEventListener getEventListener()
-    {
-        return null;
-    }
-
-    @Override
-    public CommandPurgePolicy getCommandPurgePolicy()
-    {
-        return null;
-    }
-
-    @Override
-    public ForegroundNotificationManager getForegroundNotificationManager()
-    {
-        return null;
+        return SimpleDatabaseHelper.getInstance(SimplePersistedApplication.this).getWritableDatabase();
     }
 }
