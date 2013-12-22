@@ -1,1 +1,1 @@
-mvn install:install-file -DgroupId=sqlcipher -DartifactId=sqlcipher -Dpackaging=jar -Dversion=2.0.8 -Dfile=locallib/sqlcipher.jar -DgeneratePom=true
+mvn install:install-file -DgroupId=sqlcipher -DartifactId=sqlcipher -Dpackaging=jar -Dversion=3.0.0 -Dfile=locallib/sqlcipher.jar -DgeneratePom=true

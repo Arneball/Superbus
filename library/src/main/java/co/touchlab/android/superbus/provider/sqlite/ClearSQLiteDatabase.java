@@ -2,7 +2,9 @@ package co.touchlab.android.superbus.provider.sqlite;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import co.touchlab.android.superbus.StorageException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,32 +17,86 @@ public class ClearSQLiteDatabase implements SQLiteDatabaseIntf
 {
     private SQLiteDatabase db;
 
+    public static class ClearCursor implements CursorIntf
+    {
+        private Cursor cursor;
+
+        public ClearCursor(Cursor cursor)
+        {
+            this.cursor = cursor;
+        }
+
+        @Override
+        public boolean moveToNext()
+        {
+            return cursor.moveToNext();
+        }
+
+        @Override
+        public void close()
+        {
+            cursor.close();
+        }
+
+        @Override
+        public long getLong(int i)
+        {
+            return cursor.getLong(i);
+        }
+
+        @Override
+        public String getString(int i)
+        {
+            return cursor.getString(i);
+        }
+    }
+
     public ClearSQLiteDatabase(SQLiteDatabase db)
     {
         this.db = db;
     }
 
     @Override
-    public Cursor query(String tableName, String[] columnList)
+    public CursorIntf query(String tableName, String[] columnList)
     {
-        return db.query(tableName, columnList, null, null, null, null, null);
+        return new ClearCursor(db.query(tableName, columnList, null, null, null, null, null));
     }
 
     @Override
-    public void execSQL(String sql)
+    public void execSQL(String sql) throws StorageException
     {
-        db.execSQL(sql);
+        try
+        {
+            db.execSQL(sql);
+        }
+        catch (SQLException e)
+        {
+            throw new StorageException(e);
+        }
     }
 
     @Override
-    public void delete(String tableName, String query, String[] params)
+    public int delete(String tableName, String query, String[] params)
     {
-        db.delete(tableName, query, params);
+        return db.delete(tableName, query, params);
     }
 
     @Override
-    public long insertOrThrow(String tableName, String nullColHack, ContentValues values)
+    public long insertOrThrow(String tableName, String nullColHack, ContentValues values) throws StorageException
     {
-        return db.insertOrThrow(tableName, nullColHack, values);
+        try
+        {
+            return db.insertOrThrow(tableName, nullColHack, values);
+        }
+        catch (SQLException e)
+        {
+            throw new StorageException(e);
+        }
+    }
+
+    @Override
+    public int update(String tableName, ContentValues values, String whereClause, String[] whereArgs)
+    {
+        return db.update(tableName, values, whereClause, whereArgs);
     }
 }

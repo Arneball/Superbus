@@ -2,15 +2,15 @@ package co.touchlab.android.superbus.provider;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import co.touchlab.android.superbus.Command;
 import co.touchlab.android.superbus.StorageException;
 import co.touchlab.android.superbus.SuperbusProcessor;
 import co.touchlab.android.superbus.SuperbusService;
 import co.touchlab.android.superbus.log.BusLog;
+import co.touchlab.android.superbus.provider.sqlite.CursorIntf;
 import co.touchlab.android.superbus.provider.sqlite.SQLiteDatabaseFactory;
+import co.touchlab.android.superbus.provider.sqlite.SQLiteDatabaseIntf;
 import co.touchlab.android.superbus.utils.UiThreadContext;
 
 import java.lang.reflect.Constructor;
@@ -175,7 +175,7 @@ public class CommandPersistenceProvider
         }
     }
 
-    private Command loadFromCursor(Cursor c) throws Exception
+    private Command loadFromCursor(CursorIntf c) throws Exception
     {
         try
         {
@@ -278,8 +278,8 @@ public class CommandPersistenceProvider
     {
         try
         {
-            SQLiteDatabase db = databaseFactory.getDatabase();
-            Cursor cursor = db.query(TABLE_NAME, COLUMN_LIST, null, null, null, null, null, null);
+            SQLiteDatabaseIntf db = databaseFactory.getDatabase();
+            CursorIntf cursor = db.query(TABLE_NAME, COLUMN_LIST);
 
             List<Command> commands = null;
             try
@@ -306,12 +306,12 @@ public class CommandPersistenceProvider
         }
     }
 
-    public void createTables(SQLiteDatabase database)
+    public void createTables(SQLiteDatabaseIntf database) throws StorageException
     {
         database.execSQL("create table "+ TABLE_NAME +" ("+ COLUMNS +")");
     }
 
-    public void dropTables(SQLiteDatabase database)
+    public void dropTables(SQLiteDatabaseIntf database) throws StorageException
     {
         database.execSQL("drop table "+ TABLE_NAME);
     }

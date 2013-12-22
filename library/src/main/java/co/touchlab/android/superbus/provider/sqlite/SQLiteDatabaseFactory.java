@@ -1,7 +1,5 @@
 package co.touchlab.android.superbus.provider.sqlite;
 
-import android.database.sqlite.SQLiteDatabase;
-
 /**
  * Created with IntelliJ IDEA.
  * User: kgalligan
@@ -10,5 +8,5 @@ import android.database.sqlite.SQLiteDatabase;
  */
 public interface SQLiteDatabaseFactory
 {
-    SQLiteDatabase getDatabase();
+    SQLiteDatabaseIntf getDatabase();
 }

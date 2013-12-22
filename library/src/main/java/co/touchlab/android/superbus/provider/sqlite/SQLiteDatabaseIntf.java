@@ -1,7 +1,7 @@
 package co.touchlab.android.superbus.provider.sqlite;
 
 import android.content.ContentValues;
-import android.database.Cursor;
+import co.touchlab.android.superbus.StorageException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,8 +12,9 @@ import android.database.Cursor;
  */
 public interface SQLiteDatabaseIntf
 {
-    Cursor query(String tableName, String[] columnList);
-    void execSQL(String sql);
-    void delete(String tableName, String query, String[] params);
-    long insertOrThrow(String tableName, String nullColHack, ContentValues values);
+    CursorIntf query(String tableName, String[] columnList);
+    void execSQL(String sql)throws StorageException;
+    int delete(String tableName, String query, String[] params);
+    long insertOrThrow(String tableName, String nullColHack, ContentValues values)throws StorageException;
+    int update(String tableName, ContentValues values, String whereClause, String[] whereArgs);
 }
