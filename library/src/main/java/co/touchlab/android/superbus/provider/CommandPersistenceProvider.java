@@ -39,7 +39,7 @@ public class CommandPersistenceProvider
 
     private Command top;
 
-    protected CommandPersistenceProvider(SQLiteDatabaseFactory databaseFactory, StoredCommandAdapter storedCommandAdapter, BusLog log)
+    public CommandPersistenceProvider(SQLiteDatabaseFactory databaseFactory, StoredCommandAdapter storedCommandAdapter, BusLog log)
     {
         this.databaseFactory = databaseFactory;
         this.storedCommandAdapter = storedCommandAdapter;
@@ -306,12 +306,12 @@ public class CommandPersistenceProvider
         }
     }
 
-    public void createTables(SQLiteDatabaseIntf database) throws StorageException
+    public static void createTables(SQLiteDatabaseIntf database) throws StorageException
     {
         database.execSQL("create table "+ TABLE_NAME +" ("+ COLUMNS +")");
     }
 
-    public void dropTables(SQLiteDatabaseIntf database) throws StorageException
+    public static void dropTables(SQLiteDatabaseIntf database) throws StorageException
     {
         database.execSQL("drop table "+ TABLE_NAME);
     }

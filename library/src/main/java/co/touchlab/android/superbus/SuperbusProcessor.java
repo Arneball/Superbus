@@ -8,7 +8,6 @@ import android.os.Handler;
 import co.touchlab.android.superbus.log.BusLog;
 import co.touchlab.android.superbus.log.BusLogImpl;
 import co.touchlab.android.superbus.provider.CommandPersistenceProvider;
-import co.touchlab.android.superbus.provider.PersistedApplication;
 
 /**
  * Created with IntelliJ IDEA.

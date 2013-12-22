@@ -1,7 +1,6 @@
 package co.touchlab.android.superbus;
 
 import android.content.Context;
-import co.touchlab.android.superbus.provider.PersistedApplication;
 
 import java.io.Serializable;
 import java.util.Map;

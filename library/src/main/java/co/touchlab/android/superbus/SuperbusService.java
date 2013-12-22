@@ -10,7 +10,6 @@ import android.os.IBinder;
 import android.util.Log;
 import co.touchlab.android.superbus.log.BusLog;
 import co.touchlab.android.superbus.log.BusLogImpl;
-import co.touchlab.android.superbus.provider.PersistedApplication;
 
 /**
  * The heart of the command bus.  Processes commands.

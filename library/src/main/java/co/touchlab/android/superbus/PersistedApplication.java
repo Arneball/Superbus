@@ -1,9 +1,10 @@
-package co.touchlab.android.superbus.provider;
+package co.touchlab.android.superbus;
 
 import co.touchlab.android.superbus.CommandPurgePolicy;
 import co.touchlab.android.superbus.ForegroundNotificationManager;
 import co.touchlab.android.superbus.SuperbusEventListener;
 import co.touchlab.android.superbus.log.BusLog;
+import co.touchlab.android.superbus.provider.CommandPersistenceProvider;
 
 /**
  * To use the bus, you MUST provide an implementation of this in your Application class.
