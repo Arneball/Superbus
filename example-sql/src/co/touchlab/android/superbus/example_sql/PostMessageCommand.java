@@ -6,7 +6,6 @@ import co.touchlab.android.superbus.PermanentException;
 import co.touchlab.android.superbus.StorageException;
 import co.touchlab.android.superbus.TransientException;
 import co.touchlab.android.superbus.http.BusHttpClient;
-import co.touchlab.android.superbus.provider.file.StoredCommand;
 import co.touchlab.android.superbus.provider.sqlite.SqliteCommand;
 import com.turbomanage.httpclient.HttpResponse;
 import com.turbomanage.httpclient.ParameterMap;

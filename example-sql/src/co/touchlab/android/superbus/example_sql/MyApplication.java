@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.StrictMode;
 import co.touchlab.android.superbus.CommandPurgePolicy;
+import co.touchlab.android.superbus.ForegroundNotificationManager;
 import co.touchlab.android.superbus.StorageException;
 import co.touchlab.android.superbus.SuperbusEventListener;
 import co.touchlab.android.superbus.log.BusLog;
@@ -105,6 +106,12 @@ public class MyApplication extends Application implements PersistedApplication
 
     @Override
     public CommandPurgePolicy getCommandPurgePolicy()
+    {
+        return null;
+    }
+
+    @Override
+    public ForegroundNotificationManager getForegroundNotificationManager()
     {
         return null;
     }

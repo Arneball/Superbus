@@ -38,6 +38,18 @@ public class EncryptedSQLiteDatabase implements SQLiteDatabaseIntf
         {
             cursor.close();
         }
+
+        @Override
+        public long getLong(int i)
+        {
+            return cursor.getLong(i);
+        }
+
+        @Override
+        public String getString(int i)
+        {
+            return cursor.getString(i);
+        }
     }
 
     public EncryptedSQLiteDatabase(SQLiteDatabase db)
