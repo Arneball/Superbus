@@ -1,16 +1,16 @@
-package co.touchlab.android.superbus.provider;
+package co.touchlab.android.superbus.storage;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.util.Log;
 import co.touchlab.android.superbus.Command;
-import co.touchlab.android.superbus.StorageException;
+import co.touchlab.android.superbus.errorcontrol.StorageException;
 import co.touchlab.android.superbus.SuperbusProcessor;
 import co.touchlab.android.superbus.SuperbusService;
 import co.touchlab.android.superbus.log.BusLog;
-import co.touchlab.android.superbus.provider.sqlite.CursorIntf;
-import co.touchlab.android.superbus.provider.sqlite.SQLiteDatabaseFactory;
-import co.touchlab.android.superbus.provider.sqlite.SQLiteDatabaseIntf;
+import co.touchlab.android.superbus.storage.sqlite.CursorIntf;
+import co.touchlab.android.superbus.storage.sqlite.SQLiteDatabaseFactory;
+import co.touchlab.android.superbus.storage.sqlite.SQLiteDatabaseIntf;
 import co.touchlab.android.superbus.utils.UiThreadContext;
 
 import java.lang.reflect.Constructor;

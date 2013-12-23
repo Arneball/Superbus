@@ -1,4 +1,4 @@
-package co.touchlab.android.superbus;
+package co.touchlab.android.superbus.errorcontrol;
 
 /**
  * Created with IntelliJ IDEA.

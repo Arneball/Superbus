@@ -1,7 +1,8 @@
 package co.touchlab.android.superbus;
 
+import co.touchlab.android.superbus.errorcontrol.CommandPurgePolicy;
 import co.touchlab.android.superbus.log.BusLog;
-import co.touchlab.android.superbus.provider.CommandPersistenceProvider;
+import co.touchlab.android.superbus.storage.CommandPersistenceProvider;
 
 import java.util.Collection;
 

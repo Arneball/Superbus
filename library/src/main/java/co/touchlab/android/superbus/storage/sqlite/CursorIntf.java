@@ -1,4 +1,4 @@
-package co.touchlab.android.superbus.provider.sqlite;
+package co.touchlab.android.superbus.storage.sqlite;
 
 /**
  * Created with IntelliJ IDEA.

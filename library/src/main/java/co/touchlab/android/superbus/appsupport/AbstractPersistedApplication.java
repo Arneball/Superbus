@@ -1,13 +1,18 @@
-package co.touchlab.android.superbus;
+package co.touchlab.android.superbus.appsupport;
 
 import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
+import co.touchlab.android.superbus.ForegroundNotificationManager;
+import co.touchlab.android.superbus.PersistedApplication;
+import co.touchlab.android.superbus.SuperbusEventListener;
+import co.touchlab.android.superbus.errorcontrol.CommandPurgePolicy;
+import co.touchlab.android.superbus.errorcontrol.TransientRetryBusEventListener;
 import co.touchlab.android.superbus.log.BusLog;
-import co.touchlab.android.superbus.provider.CommandPersistenceProvider;
-import co.touchlab.android.superbus.provider.gson.GsonStoredCommandAdapter;
-import co.touchlab.android.superbus.provider.sqlite.ClearSQLiteDatabase;
-import co.touchlab.android.superbus.provider.sqlite.SQLiteDatabaseFactory;
-import co.touchlab.android.superbus.provider.sqlite.SQLiteDatabaseIntf;
+import co.touchlab.android.superbus.storage.CommandPersistenceProvider;
+import co.touchlab.android.superbus.storage.gson.GsonStoredCommandAdapter;
+import co.touchlab.android.superbus.storage.sqlite.ClearSQLiteDatabase;
+import co.touchlab.android.superbus.storage.sqlite.SQLiteDatabaseFactory;
+import co.touchlab.android.superbus.storage.sqlite.SQLiteDatabaseIntf;
 
 import java.util.ArrayList;
 import java.util.Collection;

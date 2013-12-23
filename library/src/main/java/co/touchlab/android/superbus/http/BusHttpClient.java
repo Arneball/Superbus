@@ -1,8 +1,8 @@
 package co.touchlab.android.superbus.http;
 
 import android.os.Build;
-import co.touchlab.android.superbus.PermanentException;
-import co.touchlab.android.superbus.TransientException;
+import co.touchlab.android.superbus.errorcontrol.PermanentException;
+import co.touchlab.android.superbus.errorcontrol.TransientException;
 import com.turbomanage.httpclient.AbstractHttpClient;
 import com.turbomanage.httpclient.BasicRequestHandler;
 import com.turbomanage.httpclient.HttpRequestException;

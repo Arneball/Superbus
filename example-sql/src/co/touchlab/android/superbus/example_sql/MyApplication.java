@@ -3,8 +3,8 @@ package co.touchlab.android.superbus.example_sql;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.StrictMode;
-import co.touchlab.android.superbus.AbstractPersistedApplication;
-import co.touchlab.android.superbus.BusHelper;
+import co.touchlab.android.superbus.appsupport.AbstractPersistedApplication;
+import co.touchlab.android.superbus.appsupport.BusHelper;
 
 /**
  * User: William Sanville

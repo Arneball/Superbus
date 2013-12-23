@@ -1,9 +1,11 @@
-package co.touchlab.android.superbus;
+package co.touchlab.android.superbus.errorcontrol;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import co.touchlab.android.superbus.provider.CommandPersistenceProvider;
+import co.touchlab.android.superbus.SuperbusEventListener;
+import co.touchlab.android.superbus.SuperbusService;
+import co.touchlab.android.superbus.storage.CommandPersistenceProvider;
 
 /**
  * Created with IntelliJ IDEA.

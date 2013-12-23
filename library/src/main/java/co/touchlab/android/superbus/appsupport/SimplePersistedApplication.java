@@ -1,7 +1,7 @@
-package co.touchlab.android.superbus;
+package co.touchlab.android.superbus.appsupport;
 
 import android.database.sqlite.SQLiteDatabase;
-import co.touchlab.android.superbus.provider.sqlite.SimpleDatabaseHelper;
+import co.touchlab.android.superbus.storage.sqlite.SimpleDatabaseHelper;
 
 /**
  * Created with IntelliJ IDEA.

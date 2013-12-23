@@ -8,9 +8,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
-import co.touchlab.android.superbus.BusHelper;
 import co.touchlab.android.superbus.Command;
-import co.touchlab.android.superbus.StorageException;
+import co.touchlab.android.superbus.appsupport.BusHelper;
+import co.touchlab.android.superbus.errorcontrol.StorageException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;

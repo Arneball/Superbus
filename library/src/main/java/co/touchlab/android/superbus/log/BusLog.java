@@ -38,4 +38,5 @@ public interface BusLog
 
     int w(String tag, String msg);
 
+    void logSoftException(String tag, String message, Throwable tr);
 }

@@ -2,9 +2,9 @@ package co.touchlab.android.superbus.example_sql;
 
 import android.content.Context;
 import co.touchlab.android.superbus.Command;
-import co.touchlab.android.superbus.PermanentException;
-import co.touchlab.android.superbus.StorageException;
-import co.touchlab.android.superbus.TransientException;
+import co.touchlab.android.superbus.errorcontrol.PermanentException;
+import co.touchlab.android.superbus.errorcontrol.StorageException;
+import co.touchlab.android.superbus.errorcontrol.TransientException;
 import co.touchlab.android.superbus.http.BusHttpClient;
 import com.turbomanage.httpclient.HttpResponse;
 import com.turbomanage.httpclient.ParameterMap;
@@ -43,7 +43,8 @@ public class EditMessageCommand extends Command
     }
 
     @Override
-    public void callCommand(Context context) throws TransientException, PermanentException {
+    public void callCommand(Context context) throws TransientException, PermanentException
+    {
         BusHttpClient httpClient = new BusHttpClient("http://wejit.herokuapp.com");
 
         //I pass in the id but for some reason a new ExamplePost is created with an id of id+1, instead of editing orig

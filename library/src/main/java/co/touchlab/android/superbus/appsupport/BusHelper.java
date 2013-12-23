@@ -1,6 +1,9 @@
-package co.touchlab.android.superbus;
+package co.touchlab.android.superbus.appsupport;
 
 import android.content.Context;
+import co.touchlab.android.superbus.Command;
+import co.touchlab.android.superbus.PersistedApplication;
+import co.touchlab.android.superbus.errorcontrol.StorageException;
 
 import java.util.Map;
 import java.util.concurrent.ExecutorService;

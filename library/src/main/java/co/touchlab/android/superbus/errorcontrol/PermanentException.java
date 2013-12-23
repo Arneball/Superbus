@@ -1,4 +1,4 @@
-package co.touchlab.android.superbus;
+package co.touchlab.android.superbus.errorcontrol;
 
 /**
  * Thrown by commands, interpreted by the bus.  A PermanentException exception means you had a "hard"

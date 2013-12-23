@@ -1,4 +1,6 @@
-package co.touchlab.android.superbus;
+package co.touchlab.android.superbus.errorcontrol;
+
+import co.touchlab.android.superbus.Command;
 
 /**
  * Bounded CommandPurgePolicy.  Supply max time and retry counts.  If either is exceeded,

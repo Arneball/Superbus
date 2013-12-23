@@ -1,10 +1,11 @@
-package co.touchlab.android.superbus.provider.sqlite;
+package co.touchlab.android.superbus.storage.sqlite;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import co.touchlab.android.superbus.StorageException;
-import co.touchlab.android.superbus.provider.CommandPersistenceProvider;
+import co.touchlab.android.superbus.errorcontrol.StorageException;
+import co.touchlab.android.superbus.storage.CommandPersistenceProvider;
+import co.touchlab.android.superbus.storage.CommandPersistenceProvider;
 
 /**
  * Created with IntelliJ IDEA.

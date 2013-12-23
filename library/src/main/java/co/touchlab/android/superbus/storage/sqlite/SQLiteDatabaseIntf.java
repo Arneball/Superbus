@@ -1,7 +1,7 @@
-package co.touchlab.android.superbus.provider.sqlite;
+package co.touchlab.android.superbus.storage.sqlite;
 
 import android.content.ContentValues;
-import co.touchlab.android.superbus.StorageException;
+import co.touchlab.android.superbus.errorcontrol.StorageException;
 
 /**
  * Created with IntelliJ IDEA.

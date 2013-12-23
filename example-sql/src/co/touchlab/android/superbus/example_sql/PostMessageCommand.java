@@ -2,9 +2,9 @@ package co.touchlab.android.superbus.example_sql;
 
 import android.content.Context;
 import co.touchlab.android.superbus.Command;
-import co.touchlab.android.superbus.PermanentException;
-import co.touchlab.android.superbus.StorageException;
-import co.touchlab.android.superbus.TransientException;
+import co.touchlab.android.superbus.errorcontrol.PermanentException;
+import co.touchlab.android.superbus.errorcontrol.StorageException;
+import co.touchlab.android.superbus.errorcontrol.TransientException;
 import co.touchlab.android.superbus.http.BusHttpClient;
 import com.turbomanage.httpclient.HttpResponse;
 import com.turbomanage.httpclient.ParameterMap;

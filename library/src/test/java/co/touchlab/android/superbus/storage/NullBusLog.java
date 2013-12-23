@@ -1,4 +1,4 @@
-package co.touchlab.android.superbus.provider;
+package co.touchlab.android.superbus.storage;
 
 import co.touchlab.android.superbus.log.BusLog;
 
@@ -93,5 +93,11 @@ public class NullBusLog implements BusLog
     public int w(String tag, String msg)
     {
         return 0;
+    }
+
+    @Override
+    public void logSoftException(String tag, String message, Throwable tr)
+    {
+
     }
 }

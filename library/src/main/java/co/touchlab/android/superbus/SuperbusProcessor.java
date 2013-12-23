@@ -5,9 +5,10 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.os.Handler;
+import co.touchlab.android.superbus.errorcontrol.*;
 import co.touchlab.android.superbus.log.BusLog;
 import co.touchlab.android.superbus.log.BusLogImpl;
-import co.touchlab.android.superbus.provider.CommandPersistenceProvider;
+import co.touchlab.android.superbus.storage.CommandPersistenceProvider;
 
 import java.util.ArrayList;
 import java.util.Collection;

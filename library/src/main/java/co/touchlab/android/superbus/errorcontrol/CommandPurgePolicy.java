@@ -1,4 +1,6 @@
-package co.touchlab.android.superbus;
+package co.touchlab.android.superbus.errorcontrol;
+
+import co.touchlab.android.superbus.Command;
 
 /**
  * Command processing errors will eventually need to purge commands and signal processing errors. Policy

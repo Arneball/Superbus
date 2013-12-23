@@ -1,6 +1,9 @@
 package co.touchlab.android.superbus;
 
 import android.content.Context;
+import co.touchlab.android.superbus.errorcontrol.PermanentException;
+import co.touchlab.android.superbus.errorcontrol.StorageException;
+import co.touchlab.android.superbus.errorcontrol.TransientException;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -99,8 +102,8 @@ public abstract class Command implements Comparable<Command>, Serializable
      * to reduce the likelihood of this, but that is not possible today.
      *
      * @param context
-     * @throws TransientException Something happened that will resolve itself.
-     * @throws PermanentException Something happened that we can't recover from.
+     * @throws co.touchlab.android.superbus.errorcontrol.TransientException Something happened that will resolve itself.
+     * @throws co.touchlab.android.superbus.errorcontrol.PermanentException Something happened that we can't recover from.
      */
     public abstract void callCommand(Context context) throws TransientException, PermanentException;
 
@@ -230,7 +233,7 @@ public abstract class Command implements Comparable<Command>, Serializable
      * this, as it will do a simple repost.
      *
      * @param context
-     * @throws StorageException
+     * @throws co.touchlab.android.superbus.errorcontrol.StorageException
      */
     public void repostSelf(Context context) throws StorageException
     {

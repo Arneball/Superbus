@@ -1,4 +1,6 @@
-package co.touchlab.android.superbus;
+package co.touchlab.android.superbus.errorcontrol;
+
+import co.touchlab.android.superbus.Command;
 
 /**
  * Commands that trigger TransientException will live forever.

@@ -1,7 +1,7 @@
 package co.touchlab.android.superbus;
 
 import android.content.Context;
-import co.touchlab.android.superbus.provider.CommandPersistenceProvider;
+import co.touchlab.android.superbus.storage.CommandPersistenceProvider;
 
 /**
  * Callback for bus events.

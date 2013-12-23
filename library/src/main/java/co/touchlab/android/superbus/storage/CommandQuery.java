@@ -1,4 +1,4 @@
-package co.touchlab.android.superbus.provider;
+package co.touchlab.android.superbus.storage;
 
 import co.touchlab.android.superbus.Command;
 

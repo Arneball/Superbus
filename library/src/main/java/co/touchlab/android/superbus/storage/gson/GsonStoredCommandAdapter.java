@@ -1,8 +1,8 @@
-package co.touchlab.android.superbus.provider.gson;
+package co.touchlab.android.superbus.storage.gson;
 
 import co.touchlab.android.superbus.Command;
-import co.touchlab.android.superbus.StorageException;
-import co.touchlab.android.superbus.provider.StoredCommandAdapter;
+import co.touchlab.android.superbus.errorcontrol.StorageException;
+import co.touchlab.android.superbus.storage.StoredCommandAdapter;
 import com.google.gson.Gson;
 
 /**

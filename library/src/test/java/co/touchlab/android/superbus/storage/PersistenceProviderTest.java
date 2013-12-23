@@ -1,10 +1,10 @@
-package co.touchlab.android.superbus.provider;
+package co.touchlab.android.superbus.storage;
 
 import android.content.Context;
 import co.touchlab.android.superbus.Command;
-import co.touchlab.android.superbus.PermanentException;
-import co.touchlab.android.superbus.StorageException;
-import co.touchlab.android.superbus.TransientException;
+import co.touchlab.android.superbus.errorcontrol.PermanentException;
+import co.touchlab.android.superbus.errorcontrol.StorageException;
+import co.touchlab.android.superbus.errorcontrol.TransientException;
 import org.junit.Assert;
 import org.junit.Test;
 

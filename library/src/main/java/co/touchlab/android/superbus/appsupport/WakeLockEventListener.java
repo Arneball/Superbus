@@ -1,9 +1,10 @@
-package co.touchlab.android.superbus;
+package co.touchlab.android.superbus.appsupport;
 
 import android.content.Context;
 import android.os.PowerManager;
 import android.util.Log;
-import co.touchlab.android.superbus.provider.CommandPersistenceProvider;
+import co.touchlab.android.superbus.SuperbusEventListener;
+import co.touchlab.android.superbus.storage.CommandPersistenceProvider;
 
 /**
  * Created with IntelliJ IDEA.

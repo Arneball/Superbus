@@ -1,11 +1,10 @@
-package co.touchlab.android.superbus.provider.sqlite;
-
+package co.touchlab.android.superbus.storage.sqlite;
 
 import android.content.ContentValues;
-import co.touchlab.android.superbus.StorageException;
-import net.sqlcipher.Cursor;
-import net.sqlcipher.SQLException;
-import net.sqlcipher.database.SQLiteDatabase;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+import co.touchlab.android.superbus.errorcontrol.StorageException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,15 +13,15 @@ import net.sqlcipher.database.SQLiteDatabase;
  * Time: 11:22 PM
  * To change this template use File | Settings | File Templates.
  */
-public class EncryptedSQLiteDatabase implements SQLiteDatabaseIntf
+public class ClearSQLiteDatabase implements SQLiteDatabaseIntf
 {
     private SQLiteDatabase db;
 
-    public static class EncryptedCursor implements CursorIntf
+    public static class ClearCursor implements CursorIntf
     {
         private Cursor cursor;
 
-        public EncryptedCursor(Cursor cursor)
+        public ClearCursor(Cursor cursor)
         {
             this.cursor = cursor;
         }
@@ -52,7 +51,7 @@ public class EncryptedSQLiteDatabase implements SQLiteDatabaseIntf
         }
     }
 
-    public EncryptedSQLiteDatabase(SQLiteDatabase db)
+    public ClearSQLiteDatabase(SQLiteDatabase db)
     {
         this.db = db;
     }
@@ -60,7 +59,7 @@ public class EncryptedSQLiteDatabase implements SQLiteDatabaseIntf
     @Override
     public CursorIntf query(String tableName, String[] columnList)
     {
-        return new EncryptedCursor(db.query(tableName, columnList, null, null, null, null, null));
+        return new ClearCursor(db.query(tableName, columnList, null, null, null, null, null));
     }
 
     @Override

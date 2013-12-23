@@ -1,4 +1,4 @@
-package co.touchlab.android.superbus;
+package co.touchlab.android.superbus.errorcontrol;
 
 /**
  * Thrown by commands, interpreted by the bus.  A TransientException means something temporary has

@@ -4,7 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import co.touchlab.android.superbus.SuperbusEventListener;
-import co.touchlab.android.superbus.provider.CommandPersistenceProvider;
+import co.touchlab.android.superbus.storage.CommandPersistenceProvider;
 
 /**
  * The bus can be set up to automatically continue processing when the network

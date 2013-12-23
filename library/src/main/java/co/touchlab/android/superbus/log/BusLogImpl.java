@@ -95,4 +95,10 @@ public class BusLogImpl implements BusLog
     {
         return Log.w(tag, msg);
     }
+
+    @Override
+    public void logSoftException(String tag, String message, Throwable tr)
+    {
+        Log.e(tag, message, tr);
+    }
 }

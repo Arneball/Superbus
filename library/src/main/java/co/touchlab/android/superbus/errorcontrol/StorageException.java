@@ -1,4 +1,4 @@
-package co.touchlab.android.superbus;
+package co.touchlab.android.superbus.errorcontrol;
 
 /**
  * Triggered by an issue with storing command instances.  There are few situations where this might
