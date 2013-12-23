@@ -6,7 +6,6 @@ import co.touchlab.android.superbus.PermanentException;
 import co.touchlab.android.superbus.StorageException;
 import co.touchlab.android.superbus.TransientException;
 import co.touchlab.android.superbus.http.BusHttpClient;
-import co.touchlab.android.superbus.provider.sqlite.SqliteCommand;
 import com.turbomanage.httpclient.HttpResponse;
 import com.turbomanage.httpclient.ParameterMap;
 
@@ -17,8 +16,8 @@ import com.turbomanage.httpclient.ParameterMap;
  * Time: 4:44 PM
  * To change this template use File | Settings | File Templates.
  */
-public class DeleteMessageCommand extends SqliteCommand {
-
+public class DeleteMessageCommand extends Command
+{
     Long serverId;
 
     public DeleteMessageCommand(){}

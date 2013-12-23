@@ -2,6 +2,7 @@ package co.touchlab.android.superbus;
 
 import android.content.Context;
 
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -39,6 +40,21 @@ public class BusHelper
         {
             throw new RuntimeException(e);
         }
+    }
+
+    public static void sendMessage(Context context, String message)
+    {
+        sendMessage(context, message, null);
+    }
+
+    public static void sendMessage(Context context, String message, Map args)
+    {
+        final PersistedApplication application = (PersistedApplication) context.getApplicationContext();
+
+        if(args == null)
+            application.getProvider().sendMessage(context, message);
+        else
+            application.getProvider().sendMessage(context, message, args);
     }
 
 }

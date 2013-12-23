@@ -8,8 +8,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
+import co.touchlab.android.superbus.BusHelper;
+import co.touchlab.android.superbus.Command;
 import co.touchlab.android.superbus.StorageException;
-import co.touchlab.android.superbus.provider.PersistenceProvider;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -20,7 +21,6 @@ import java.util.List;
  */
 public class ExampleActivity extends Activity
 {
-    private PersistenceProvider persistenceProvider;
     private ListView messagesListView;
 
     BroadcastReceiver loadDone = new BroadcastReceiver()
@@ -38,7 +38,6 @@ public class ExampleActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        persistenceProvider = ((MyApplication) getApplication()).getProvider();
         messagesListView = (ListView) findViewById(android.R.id.list);
         ArrayAdapter<MessageEntry> dataAdapter = new ArrayAdapter<MessageEntry>(this, android.R.layout.simple_list_item_1, new ArrayList<MessageEntry>());
 
@@ -196,7 +195,7 @@ public class ExampleActivity extends Activity
 
         try
         {
-            persistenceProvider.sendMessage(this, GetMessageCommand.CANCEL_UPDATE);
+            BusHelper.sendMessage(this, GetMessageCommand.CANCEL_UPDATE);
 
             //Update the database
             instance.insertOrUpdateMessage(db, messageEntry);
@@ -205,13 +204,15 @@ public class ExampleActivity extends Activity
             Long posted = messageEntry.getPosted();
             String messString = messageEntry.getMessage();
 
+            Command command;
             if (serverId != null && posted != -1l)
-                persistenceProvider.put(this, new EditMessageCommand(messString, serverId));
+                command = new EditMessageCommand(messString, serverId);
             else if (posted == -1l)
-                persistenceProvider.put(this, new DeleteMessageCommand(serverId));
+                command = new DeleteMessageCommand(serverId);
             else
-                persistenceProvider.put(this, new PostMessageCommand(messString));
+                command = new PostMessageCommand(messString);
 
+            BusHelper.submitCommandSync(this, command);
             db.setTransactionSuccessful();
         }
         finally

@@ -7,13 +7,18 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.util.Log;
-import co.touchlab.android.superbus.provider.sqlite.AbstractSqlitePersistenceProvider;
+import co.touchlab.android.superbus.StorageException;
+import co.touchlab.android.superbus.provider.CommandPersistenceProvider;
+import co.touchlab.android.superbus.provider.sqlite.ClearSQLiteDatabase;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -153,8 +158,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public void onCreate(SQLiteDatabase db)
     {
         db.execSQL("create table "+ TABLE_NAME +" ("+ COLUMNS +")");
-        MyApplication app = findAppContext();
-        ((AbstractSqlitePersistenceProvider) app.getProvider()).createTables(db);
+        try
+        {
+            CommandPersistenceProvider.createTables(new ClearSQLiteDatabase(db));
+        }
+        catch (StorageException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -164,10 +175,5 @@ public class DatabaseHelper extends SQLiteOpenHelper
         {
 
         }
-    }
-
-    private MyApplication findAppContext()
-    {
-        return (MyApplication) loadContext.getApplicationContext();
     }
 }

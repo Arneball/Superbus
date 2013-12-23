@@ -6,10 +6,8 @@ import co.touchlab.android.superbus.PermanentException;
 import co.touchlab.android.superbus.StorageException;
 import co.touchlab.android.superbus.TransientException;
 import co.touchlab.android.superbus.http.BusHttpClient;
-import co.touchlab.android.superbus.provider.sqlite.SqliteCommand;
 import com.turbomanage.httpclient.HttpResponse;
 import com.turbomanage.httpclient.ParameterMap;
-import org.json.JSONException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,7 +15,7 @@ import org.json.JSONException;
  * Date: 10/12/12
  * Time: 5:05 PM
  */
-public class EditMessageCommand extends SqliteCommand
+public class EditMessageCommand extends Command
 {
 
     String message;

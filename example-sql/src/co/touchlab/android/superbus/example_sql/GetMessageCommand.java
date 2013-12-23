@@ -8,12 +8,8 @@ import co.touchlab.android.superbus.PermanentException;
 import co.touchlab.android.superbus.StorageException;
 import co.touchlab.android.superbus.TransientException;
 import co.touchlab.android.superbus.http.BusHttpClient;
-import co.touchlab.android.superbus.provider.sqlite.SqliteCommand;
 import com.turbomanage.httpclient.HttpResponse;
 import org.json.JSONException;
-
-import java.io.IOException;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,7 +18,7 @@ import java.util.List;
  * Time: 2:48 AM
  * To change this template use File | Settings | File Templates.
  */
-public class GetMessageCommand extends SqliteCommand
+public class GetMessageCommand extends Command
 {
 
     public static final String GET_MESSAGE_COMMAND_COMPLETE = "GetMessageCommand-complete";

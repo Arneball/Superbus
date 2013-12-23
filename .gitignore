@@ -5,3 +5,4 @@ target
 example/gen
 .idea
 library/build.sh
+atlassian-ide-plugin.xml
