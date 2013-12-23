@@ -2,6 +2,7 @@ package co.touchlab.android.superbus;
 
 import android.app.Application;
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -126,5 +127,10 @@ public class SuperbusService extends Service
     public static void notifyStart(Context c)
     {
         c.startService(new Intent(c, SuperbusService.class));
+    }
+
+    public static PendingIntent pendingNotifyStart(Context c)
+    {
+        return PendingIntent.getService(c, 523444, new Intent(c, SuperbusService.class), 0);
     }
 }

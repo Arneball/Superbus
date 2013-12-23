@@ -9,6 +9,10 @@ import co.touchlab.android.superbus.log.BusLog;
 import co.touchlab.android.superbus.log.BusLogImpl;
 import co.touchlab.android.superbus.provider.CommandPersistenceProvider;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: kgalligan
@@ -21,7 +25,7 @@ public class SuperbusProcessor
     public static final String TAG = SuperbusProcessor.class.getSimpleName();
     private CommandThread thread;
     private CommandPersistenceProvider provider;
-    private SuperbusEventListener eventListener;
+    private List<SuperbusEventListener> eventListenerList = new ArrayList<SuperbusEventListener>();
     private CommandPurgePolicy commandPurgePolicy;
     private BusLog log;
     private Handler mainThreadHandler;
@@ -34,7 +38,9 @@ public class SuperbusProcessor
         this.appContext = parentService.getApplication();
         this.parentService = parentService;
         provider = checkLoadProvider(appContext);
-        eventListener = checkLoadEventListener(appContext);
+        Collection<SuperbusEventListener> listeners = checkLoadEventListener(appContext);
+        if(listeners != null)
+            eventListenerList.addAll(listeners);
         commandPurgePolicy = checkLoadCommandPurgePolicy(appContext);
         log.v(TAG, "onCreate " + System.currentTimeMillis());
 
@@ -83,13 +89,12 @@ public class SuperbusProcessor
 
             Command c;
 
-            boolean forceShutdown;
             try
             {
-                forceShutdown = false;
-
-                if (eventListener != null)
+                for (SuperbusEventListener eventListener : eventListenerList)
+                {
                     eventListener.onBusStarted(appContext, provider);
+                }
 
                 provider.logPersistenceState();
 
@@ -136,7 +141,6 @@ public class SuperbusProcessor
                                 c.onTransientError(appContext, e);
                             }
 
-                            forceShutdown = true;
                             break;
                         }
                         catch (StorageException e1)
@@ -157,63 +161,17 @@ public class SuperbusProcessor
             catch (Throwable e)
             {
                 log.e(TAG, "Thread ended with exception", e);
-                forceShutdown = true;
             }
 
-            if (forceShutdown)
+            mainThreadHandler.post(new Runnable()
             {
-                log.i(TAG, "CommandThread loop done (forced)");
-                finishThread();
-                mainThreadHandler.post(new Runnable()
+                @Override
+                public void run()
                 {
-                    public void run()
-                    {
-                        stopService();
-                    }
-                });
-            }
-            else
-            {
-                //Running wrap up in ui thread.  The concern here is that between the time that the while loop ends,
-                //and the kill logic runs, another command comes in.  The "start" logic would've rejected starting a new
-                //thread.  However, the loop would end, and the command would stay out in the queue.  Data would stay
-                //in play, but wouldn't automatically start processing.  Rare, but frustrating bug.
-                //The assumption here is that either onStartCommand, and this block, would be called in exclusion, so
-                //either the service would be stopped and restarted, or we'd see the new command and restart.
-                //TODO: Should confirm this assumption.
-                mainThreadHandler.post(new Runnable()
-                {
-                    public void run()
-                    {
-                        log.i(TAG, "CommandThread loop done (natural)");
-                        finishThread();
-
-                        //This is complex.  In the EXTREMELY unlikely case that the call to getSize fails,
-                        //just return 0 and exit.  I honestly have no idea what else we should do here.
-                        //Probably better off to throw up hands and crash app, but willing to take votes on the matter.
-                        int size = 0;
-                        try
-                        {
-                            size = provider.getSize();
-                        }
-                        catch (StorageException e)
-                        {
-                            log.e(TAG, null, e);
-                        }
-
-                        //Extremely unlikely, but still.
-                        if (size > 0)
-                        {
-                            checkAndStart();
-                        }
-                        else
-                        {
-                            stopService();
-                        }
-                    }
-                });
-            }
-
+                    finishThread();
+                    stopService();
+                }
+            });
         }
 
         private void logPermanentException(Command c, Throwable e)
@@ -245,8 +203,10 @@ public class SuperbusProcessor
     {
         try
         {
-            if (eventListener != null)
+            for (SuperbusEventListener eventListener : eventListenerList)
+            {
                 eventListener.onBusFinished(context, provider, provider.getSize() == 0);
+            }
         }
         catch (StorageException e)
         {
@@ -303,13 +263,13 @@ public class SuperbusProcessor
      * @param application The Application object.
      * @return Some implementation of PersistenceProvider.
      */
-    public SuperbusEventListener checkLoadEventListener(Application application)
+    public Collection<SuperbusEventListener> checkLoadEventListener(Application application)
     {
         if (application instanceof PersistedApplication)
         {
             PersistedApplication persistedApplication = (PersistedApplication) application;
 
-            return persistedApplication.getEventListener();
+            return persistedApplication.getEventListeners();
         }
 
         return null;

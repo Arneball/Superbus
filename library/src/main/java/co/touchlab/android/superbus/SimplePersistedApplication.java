@@ -1,13 +1,6 @@
 package co.touchlab.android.superbus;
 
-import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
-import co.touchlab.android.superbus.log.BusLog;
-import co.touchlab.android.superbus.provider.CommandPersistenceProvider;
-import co.touchlab.android.superbus.provider.gson.GsonStoredCommandAdapter;
-import co.touchlab.android.superbus.provider.sqlite.ClearSQLiteDatabase;
-import co.touchlab.android.superbus.provider.sqlite.SQLiteDatabaseFactory;
-import co.touchlab.android.superbus.provider.sqlite.SQLiteDatabaseIntf;
 import co.touchlab.android.superbus.provider.sqlite.SimpleDatabaseHelper;
 
 /**

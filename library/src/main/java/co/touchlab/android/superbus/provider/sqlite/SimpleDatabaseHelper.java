@@ -3,13 +3,8 @@ package co.touchlab.android.superbus.provider.sqlite;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import co.touchlab.android.superbus.PersistedApplication;
 import co.touchlab.android.superbus.StorageException;
 import co.touchlab.android.superbus.provider.CommandPersistenceProvider;
-
-import java.sql.SQLException;
-import java.util.List;
-import java.util.concurrent.Callable;
 
 /**
  * Created with IntelliJ IDEA.

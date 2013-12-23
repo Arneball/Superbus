@@ -1,10 +1,9 @@
 package co.touchlab.android.superbus;
 
-import co.touchlab.android.superbus.CommandPurgePolicy;
-import co.touchlab.android.superbus.ForegroundNotificationManager;
-import co.touchlab.android.superbus.SuperbusEventListener;
 import co.touchlab.android.superbus.log.BusLog;
 import co.touchlab.android.superbus.provider.CommandPersistenceProvider;
+
+import java.util.Collection;
 
 /**
  * To use the bus, you MUST provide an implementation of this in your Application class.
@@ -29,7 +28,7 @@ public interface PersistedApplication
     /**
      * @return Bus lifecycle event listener.  Can, and will usually be, null.  To enable/disable network restart processing, use ConnectionChangeBusEventListener.
      */
-    SuperbusEventListener getEventListener();
+    Collection<SuperbusEventListener> getEventListeners();
 
     /**
      * @return Return a custom purge policy. Can be null.

@@ -9,6 +9,10 @@ import co.touchlab.android.superbus.provider.sqlite.ClearSQLiteDatabase;
 import co.touchlab.android.superbus.provider.sqlite.SQLiteDatabaseFactory;
 import co.touchlab.android.superbus.provider.sqlite.SQLiteDatabaseIntf;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: kgalligan
@@ -40,9 +44,11 @@ public abstract class AbstractPersistedApplication extends Application implement
     }
 
     @Override
-    public SuperbusEventListener getEventListener()
+    public Collection<SuperbusEventListener> getEventListeners()
     {
-        return null;
+        List<SuperbusEventListener> list = new ArrayList<SuperbusEventListener>(1);
+        list.add(new TransientRetryBusEventListener());
+        return list;
     }
 
     @Override
