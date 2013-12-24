@@ -8,6 +8,7 @@ import co.touchlab.android.superbus.errorcontrol.StorageException;
 import co.touchlab.android.superbus.SuperbusProcessor;
 import co.touchlab.android.superbus.SuperbusService;
 import co.touchlab.android.superbus.log.BusLog;
+import co.touchlab.android.superbus.log.BusLogImpl;
 import co.touchlab.android.superbus.storage.sqlite.CursorIntf;
 import co.touchlab.android.superbus.storage.sqlite.SQLiteDatabaseFactory;
 import co.touchlab.android.superbus.storage.sqlite.SQLiteDatabaseIntf;
@@ -43,7 +44,7 @@ public class CommandPersistenceProvider
     {
         this.databaseFactory = databaseFactory;
         this.storedCommandAdapter = storedCommandAdapter;
-        this.log = log;
+        this.log = log == null ? new BusLogImpl() : log;
     }
 
     public BusLog getLog()
