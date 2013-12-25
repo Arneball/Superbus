@@ -38,8 +38,6 @@ public class CommandPersistenceProvider
     private final PriorityQueue<Command> commandQueue = new PriorityQueue<Command>();
     private boolean initCalled = false;
 
-    private Command top;
-
     public CommandPersistenceProvider(SQLiteDatabaseFactory databaseFactory, StoredCommandAdapter storedCommandAdapter, BusLog log)
     {
         this.databaseFactory = databaseFactory;
