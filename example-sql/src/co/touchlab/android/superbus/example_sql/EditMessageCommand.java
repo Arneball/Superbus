@@ -2,10 +2,13 @@ package co.touchlab.android.superbus.example_sql;
 
 import android.content.Context;
 import co.touchlab.android.superbus.Command;
+import co.touchlab.android.superbus.appsupport.CommandBusHelper;
 import co.touchlab.android.superbus.errorcontrol.PermanentException;
 import co.touchlab.android.superbus.errorcontrol.StorageException;
 import co.touchlab.android.superbus.errorcontrol.TransientException;
 import co.touchlab.android.superbus.http.BusHttpClient;
+import co.touchlab.android.superbus.storage.CommandPersistenceProvider;
+import co.touchlab.android.superbus.storage.PersistenceProvider;
 import com.turbomanage.httpclient.HttpResponse;
 import com.turbomanage.httpclient.ParameterMap;
 
@@ -58,14 +61,7 @@ public class EditMessageCommand extends Command
         //Check if anything went south
         httpClient.checkAndThrowError();
 
-        try
-        {
-            ((MyApplication)context.getApplicationContext()).getProvider().put(context, new GetMessageCommand());
-        }
-        catch (StorageException e)
-        {
-            //Optional
-        }
+        CommandBusHelper.submitCommandSync(context, new GetMessageCommand());
     }
 
     @Override

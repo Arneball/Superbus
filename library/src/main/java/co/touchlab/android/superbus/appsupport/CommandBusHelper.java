@@ -4,6 +4,7 @@ import android.content.Context;
 import co.touchlab.android.superbus.Command;
 import co.touchlab.android.superbus.PersistedApplication;
 import co.touchlab.android.superbus.errorcontrol.StorageException;
+import co.touchlab.android.superbus.storage.CommandPersistenceProvider;
 
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -16,7 +17,7 @@ import java.util.concurrent.Executors;
  * Time: 10:05 PM
  * To change this template use File | Settings | File Templates.
  */
-public class BusHelper
+public class CommandBusHelper
 {
     static ExecutorService executorService = Executors.newSingleThreadExecutor();
 
@@ -37,13 +38,26 @@ public class BusHelper
         final PersistedApplication application = (PersistedApplication) context.getApplicationContext();
         try
         {
-            application.getConfig().getCommandPersistenceProvider().put((Context)application, command);
+            ((CommandPersistenceProvider)application.getConfig().getPersistenceProvider()).put((Context)application, command);
         }
         catch (StorageException e)
         {
             throw new RuntimeException(e);
         }
     }
+
+    public static void repostCommandSync(Context context, Command command)
+        {
+            final PersistedApplication application = (PersistedApplication) context.getApplicationContext();
+            try
+            {
+                application.getConfig().getPersistenceProvider().repostCommand(command);
+            }
+            catch (StorageException e)
+            {
+                throw new RuntimeException(e);
+            }
+        }
 
     public static void sendMessage(Context context, String message)
     {
@@ -55,9 +69,9 @@ public class BusHelper
         final PersistedApplication application = (PersistedApplication) context.getApplicationContext();
 
         if(args == null)
-            application.getConfig().getCommandPersistenceProvider().sendMessage(context, message);
+            ((CommandPersistenceProvider)application.getConfig().getPersistenceProvider()).sendMessage(context, message);
         else
-            application.getConfig().getCommandPersistenceProvider().sendMessage(context, message, args);
+            ((CommandPersistenceProvider)application.getConfig().getPersistenceProvider()).sendMessage(context, message, args);
     }
 
 }

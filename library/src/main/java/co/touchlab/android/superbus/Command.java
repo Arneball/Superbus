@@ -228,23 +228,10 @@ public abstract class Command implements Comparable<Command>, Serializable
         return (int)(added - command.getAdded());
     }
 
-    /**
-     * If your command was cancelled mid-stream, easy way to repost to the queue.  Be careful with
-     * this, as it will do a simple repost.
-     *
-     * @param context
-     * @throws co.touchlab.android.superbus.errorcontrol.StorageException
-     */
-    public void repostSelf(Context context) throws StorageException
-    {
-        PersistedApplication persistedApplication = (PersistedApplication) context.getApplicationContext();
-        persistedApplication.getConfig().getCommandPersistenceProvider().put(context, this);
-    }
-
     public void removeSelf(Context context) throws StorageException
     {
         PersistedApplication persistedApplication = (PersistedApplication) context.getApplicationContext();
-        persistedApplication.getConfig().getCommandPersistenceProvider().removeCommand(this);
+        persistedApplication.getConfig().getPersistenceProvider().removeCommand(this);
     }
 
     private Long id;

@@ -5,14 +5,11 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.os.Handler;
-import co.touchlab.android.superbus.errorcontrol.*;
+import co.touchlab.android.superbus.errorcontrol.PermanentException;
+import co.touchlab.android.superbus.errorcontrol.StorageException;
+import co.touchlab.android.superbus.errorcontrol.TransientException;
 import co.touchlab.android.superbus.log.BusLog;
-import co.touchlab.android.superbus.log.BusLogImpl;
-import co.touchlab.android.superbus.storage.CommandPersistenceProvider;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import co.touchlab.android.superbus.storage.PersistenceProvider;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,7 +23,7 @@ public class SuperbusProcessor
     public static final String TAG = SuperbusProcessor.class.getSimpleName();
     private CommandThread thread;
     private SuperbusConfig config;
-    private CommandPersistenceProvider provider;
+    private PersistenceProvider provider;
     private BusLog log;
     private Handler mainThreadHandler;
     private Service parentService;
@@ -38,7 +35,7 @@ public class SuperbusProcessor
         this.parentService = parentService;
         this.config = config;
         log = config.log;
-        provider = config.commandPersistenceProvider;
+        provider = config.persistenceProvider;
         mainThreadHandler = new Handler();
     }
 

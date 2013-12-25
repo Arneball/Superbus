@@ -5,7 +5,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import co.touchlab.android.superbus.errorcontrol.StorageException;
 import co.touchlab.android.superbus.storage.CommandPersistenceProvider;
-import co.touchlab.android.superbus.storage.CommandPersistenceProvider;
 
 /**
  * Created with IntelliJ IDEA.

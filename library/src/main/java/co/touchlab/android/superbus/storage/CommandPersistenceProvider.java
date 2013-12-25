@@ -4,9 +4,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.util.Log;
 import co.touchlab.android.superbus.Command;
-import co.touchlab.android.superbus.errorcontrol.StorageException;
 import co.touchlab.android.superbus.SuperbusProcessor;
 import co.touchlab.android.superbus.SuperbusService;
+import co.touchlab.android.superbus.errorcontrol.StorageException;
 import co.touchlab.android.superbus.log.BusLog;
 import co.touchlab.android.superbus.log.BusLogImpl;
 import co.touchlab.android.superbus.storage.sqlite.CursorIntf;
@@ -24,7 +24,7 @@ import java.util.*;
  * Time: 5:16 PM
  * To change this template use File | Settings | File Templates.
  */
-public class CommandPersistenceProvider
+public class CommandPersistenceProvider implements PersistenceProvider
 {
     public static final String TABLE_NAME = "__SQL_PERS_PROV";
     public static final String COLUMNS = "id INTEGER PRIMARY KEY AUTOINCREMENT, type VARCHAR, commandData VARCHAR";

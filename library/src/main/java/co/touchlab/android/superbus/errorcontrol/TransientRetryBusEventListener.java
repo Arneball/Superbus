@@ -5,7 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import co.touchlab.android.superbus.SuperbusEventListener;
 import co.touchlab.android.superbus.SuperbusService;
-import co.touchlab.android.superbus.storage.CommandPersistenceProvider;
+import co.touchlab.android.superbus.storage.PersistenceProvider;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,7 +23,7 @@ public class TransientRetryBusEventListener implements SuperbusEventListener
     int incompleteRetires = 0;
 
     @Override
-    public void onBusStarted(Context context, CommandPersistenceProvider provider)
+    public void onBusStarted(Context context, PersistenceProvider provider)
     {
         cancelAlarm(context);
     }
@@ -35,7 +35,7 @@ public class TransientRetryBusEventListener implements SuperbusEventListener
     }
 
     @Override
-    public void onBusFinished(Context context, CommandPersistenceProvider provider, boolean complete)
+    public void onBusFinished(Context context, PersistenceProvider provider, boolean complete)
     {
         if(!complete)
         {

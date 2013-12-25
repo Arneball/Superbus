@@ -7,7 +7,7 @@ import co.touchlab.android.superbus.errorcontrol.ConfigException;
 import co.touchlab.android.superbus.errorcontrol.TransientMethuselahCommandPurgePolicy;
 import co.touchlab.android.superbus.log.BusLog;
 import co.touchlab.android.superbus.log.BusLogImpl;
-import co.touchlab.android.superbus.storage.CommandPersistenceProvider;
+import co.touchlab.android.superbus.storage.PersistenceProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public class SuperbusConfig
     ForegroundNotificationManager foregroundNotificationManager;
     BusLog log;
     CommandPurgePolicy commandPurgePolicy;
-    CommandPersistenceProvider commandPersistenceProvider;
+    PersistenceProvider persistenceProvider;
 
     public static class Builder
     {
@@ -65,10 +65,10 @@ public class SuperbusConfig
             return this;
         }
 
-        public Builder setCommandPersistenceProvider(CommandPersistenceProvider p) throws ConfigException
+        public Builder setPersistenceProvider(PersistenceProvider p) throws ConfigException
         {
             checkState();
-            config.commandPersistenceProvider = p;
+            config.persistenceProvider = p;
             return this;
         }
 
@@ -100,7 +100,7 @@ public class SuperbusConfig
                     }
                 };
 
-            if (config.commandPersistenceProvider == null)
+            if (config.persistenceProvider == null)
                 throw new ConfigException("Superbus needs a persistence provider");
 
             SuperbusConfig retConfig = config;
@@ -129,8 +129,8 @@ public class SuperbusConfig
         return commandPurgePolicy;
     }
 
-    public CommandPersistenceProvider getCommandPersistenceProvider()
+    public PersistenceProvider getPersistenceProvider()
     {
-        return commandPersistenceProvider;
+        return persistenceProvider;
     }
 }

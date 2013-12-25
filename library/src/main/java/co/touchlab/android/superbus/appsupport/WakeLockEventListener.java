@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.PowerManager;
 import android.util.Log;
 import co.touchlab.android.superbus.SuperbusEventListener;
-import co.touchlab.android.superbus.storage.CommandPersistenceProvider;
+import co.touchlab.android.superbus.storage.PersistenceProvider;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,7 +19,7 @@ public class WakeLockEventListener implements SuperbusEventListener
     private PowerManager.WakeLock wl;
 
     @Override
-    public void onBusStarted(Context context, CommandPersistenceProvider provider)
+    public void onBusStarted(Context context, PersistenceProvider provider)
     {
         Log.d(WakeLockEventListener.class.getSimpleName(), "WakeLong-onBusStarted");
         PowerManager pm = (PowerManager)context.getSystemService(
@@ -29,7 +29,7 @@ public class WakeLockEventListener implements SuperbusEventListener
     }
 
     @Override
-    public void onBusFinished(Context context, CommandPersistenceProvider provider, boolean complete)
+    public void onBusFinished(Context context, PersistenceProvider provider, boolean complete)
     {
         Log.d(WakeLockEventListener.class.getSimpleName(), "WakeLong-onBusFinished");
         wl.release();

@@ -3,8 +3,8 @@ package co.touchlab.android.superbus.example_sql;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.StrictMode;
-import co.touchlab.android.superbus.appsupport.AbstractPersistedApplication;
-import co.touchlab.android.superbus.appsupport.BusHelper;
+import co.touchlab.android.superbus.appsupport.AbstractCommandPersistedApplication;
+import co.touchlab.android.superbus.appsupport.CommandBusHelper;
 
 /**
  * User: William Sanville
@@ -13,7 +13,7 @@ import co.touchlab.android.superbus.appsupport.BusHelper;
  * An implementation of the PersistedApplication interface, to maintain a singleton of the object we're using to persist
  * commands.
  */
-public class MyApplication extends AbstractPersistedApplication
+public class MyApplication extends AbstractCommandPersistedApplication
 {
     public static final int ICS = 15;
 
@@ -31,7 +31,7 @@ public class MyApplication extends AbstractPersistedApplication
             @Override
             public void run()
             {
-                BusHelper.submitCommandSync(MyApplication.this, new GetMessageCommand());
+                CommandBusHelper.submitCommandSync(MyApplication.this, new GetMessageCommand());
             }
         }.start();
     }

@@ -10,11 +10,11 @@ import co.touchlab.android.superbus.storage.sqlite.SimpleDatabaseHelper;
  * Time: 5:54 PM
  * To change this template use File | Settings | File Templates.
  */
-public class SimplePersistedApplication extends AbstractPersistedApplication
+public class SimpleCommandPersistedApplication extends AbstractCommandPersistedApplication
 {
     @Override
     protected SQLiteDatabase getWritableDatabase()
     {
-        return SimpleDatabaseHelper.getInstance(SimplePersistedApplication.this).getWritableDatabase();
+        return SimpleDatabaseHelper.getInstance(SimpleCommandPersistedApplication.this).getWritableDatabase();
     }
 }

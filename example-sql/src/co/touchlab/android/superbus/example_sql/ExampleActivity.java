@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
 import co.touchlab.android.superbus.Command;
-import co.touchlab.android.superbus.appsupport.BusHelper;
+import co.touchlab.android.superbus.appsupport.CommandBusHelper;
 import co.touchlab.android.superbus.errorcontrol.StorageException;
 import org.apache.commons.lang3.StringUtils;
 
@@ -195,7 +195,7 @@ public class ExampleActivity extends Activity
 
         try
         {
-            BusHelper.sendMessage(this, GetMessageCommand.CANCEL_UPDATE);
+            CommandBusHelper.sendMessage(this, GetMessageCommand.CANCEL_UPDATE);
 
             //Update the database
             instance.insertOrUpdateMessage(db, messageEntry);
@@ -212,7 +212,7 @@ public class ExampleActivity extends Activity
             else
                 command = new PostMessageCommand(messString);
 
-            BusHelper.submitCommandSync(this, command);
+            CommandBusHelper.submitCommandSync(this, command);
             db.setTransactionSuccessful();
         }
         finally

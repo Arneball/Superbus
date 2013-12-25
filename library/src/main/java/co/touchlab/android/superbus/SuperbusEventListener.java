@@ -1,7 +1,7 @@
 package co.touchlab.android.superbus;
 
 import android.content.Context;
-import co.touchlab.android.superbus.storage.CommandPersistenceProvider;
+import co.touchlab.android.superbus.storage.PersistenceProvider;
 
 /**
  * Callback for bus events.
@@ -14,8 +14,8 @@ import co.touchlab.android.superbus.storage.CommandPersistenceProvider;
  */
 public interface SuperbusEventListener
 {
-    void onBusStarted(Context context, CommandPersistenceProvider provider);
-    void onBusFinished(Context context, CommandPersistenceProvider provider, boolean complete);
+    void onBusStarted(Context context, PersistenceProvider provider);
+    void onBusFinished(Context context, PersistenceProvider provider, boolean complete);
 
     //Should probably add something for each command
 }

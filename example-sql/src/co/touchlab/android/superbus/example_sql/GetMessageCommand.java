@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import co.touchlab.android.superbus.Command;
+import co.touchlab.android.superbus.appsupport.CommandBusHelper;
 import co.touchlab.android.superbus.errorcontrol.PermanentException;
 import co.touchlab.android.superbus.errorcontrol.StorageException;
 import co.touchlab.android.superbus.errorcontrol.TransientException;
@@ -35,14 +36,7 @@ public class GetMessageCommand extends Command
     {
         if(message.equals(CANCEL_UPDATE))
             cancelUpdate = true;
-        try
-        {
-            repostSelf(context);
-        }
-        catch (StorageException e)
-        {
-            //Nope
-        }
+        CommandBusHelper.submitCommandSync(context, this);
     }
 
     @Override
