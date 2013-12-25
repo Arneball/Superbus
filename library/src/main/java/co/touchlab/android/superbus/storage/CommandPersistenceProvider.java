@@ -61,16 +61,7 @@ public class CommandPersistenceProvider
 
         loadInitialCommands();
 
-        boolean duplicate = false;
-
-        for (Command command : commandQueue)
-        {
-            if (c.same(command))
-            {
-                duplicate = true;
-                break;
-            }
-        }
+        boolean duplicate = checkHasDuplicate(c);
 
         if (!duplicate)
         {
@@ -89,13 +80,28 @@ public class CommandPersistenceProvider
         SuperbusService.notifyStart(context);
     }
 
+    private boolean checkHasDuplicate(Command c)
+    {
+        boolean duplicate = false;
+
+        for (Command command : commandQueue)
+        {
+            if (c.same(command))
+            {
+                duplicate = true;
+                break;
+            }
+        }
+        return duplicate;
+    }
+
     public synchronized Command readTop() throws StorageException
     {
         loadInitialCommands();
         return commandQueue.peek();
     }
 
-    public void persistCommand(Context context, Command command) throws StorageException
+    public synchronized void persistCommand(Context context, Command command) throws StorageException
     {
         //Sanity check. StoredCommand classes need a no-arg constructor
         checkNoArg(command);
@@ -131,10 +137,19 @@ public class CommandPersistenceProvider
         return values;
     }
 
-    public void updateCommand(Command command) throws StorageException
+    public synchronized void repostCommand(Command command) throws StorageException
     {
-        ContentValues values = prepCommandSave(command);
-        databaseFactory.getDatabase().update(TABLE_NAME, values, "id = ?", new String[]{command.getId().toString()});
+        boolean duplicate = checkHasDuplicate(command);
+
+        if(duplicate)
+        {
+            removeCommand(command);
+        }
+        else
+        {
+            ContentValues values = prepCommandSave(command);
+            databaseFactory.getDatabase().update(TABLE_NAME, values, "id = ?", new String[]{command.getId().toString()});
+        }
     }
 
     protected void checkNoArg(Command command) throws StorageException
@@ -163,7 +178,7 @@ public class CommandPersistenceProvider
         checkedCommandClasses.add(commandClass);
     }
 
-    public void removeCommand(Command command) throws StorageException
+    public synchronized void removeCommand(Command command) throws StorageException
     {
         try
         {
@@ -233,7 +248,7 @@ public class CommandPersistenceProvider
         }
     }
 
-    public int getSize() throws StorageException
+    public synchronized int getSize() throws StorageException
     {
         loadInitialCommands();
         return commandQueue.size();

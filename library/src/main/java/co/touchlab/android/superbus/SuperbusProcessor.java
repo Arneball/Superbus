@@ -138,7 +138,7 @@ public class SuperbusProcessor
                             else
                             {
                                 c.setCommandRunning(false);
-                                provider.updateCommand(c);
+                                provider.repostCommand(c);
                                 c.onTransientError(appContext, e);
                             }
 
