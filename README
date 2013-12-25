@@ -1,3 +1,7 @@
 Superbus (name suggestions welcome) is a synchronization bus service for Android.  We've built several projects that need to do background syncing.  This is the functionality that emerged from that.  This is highly slanted towards network communication, but it could in theory be used for architecting a local storage scheduling system (or whatever).
 
 Outside of the core functionality, this is still VERY new.  Comments and feedback highly encouraged.
+
+V2 of this guy coming soon. There was a bug in the recent build, btw, so you'll want to update.
+
+V2 will simplify things.  Like half the code is going away. Only SQLite as storage. The lifecycle sort of "evolved" as we needed something. That'll get locked down. Also improvements to the retry/loop logic. It'll be cool.
