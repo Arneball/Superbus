@@ -221,6 +221,7 @@
   </component>
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/example-sb/example-sb.iml" filepath="$PROJECT_DIR$/example-sb/example-sb.iml" />
       <module fileurl="file://$PROJECT_DIR$/example-sql/example-sql.iml" filepath="$PROJECT_DIR$/example-sql/example-sql.iml" />
       <module fileurl="file://$PROJECT_DIR$/library/superbus.iml" filepath="$PROJECT_DIR$/library/superbus.iml" />
     </modules>
