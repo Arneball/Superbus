@@ -37,7 +37,7 @@ public class BusHelper
         final PersistedApplication application = (PersistedApplication) context.getApplicationContext();
         try
         {
-            application.getProvider().put((Context)application, command);
+            application.getConfig().getCommandPersistenceProvider().put((Context)application, command);
         }
         catch (StorageException e)
         {
@@ -55,9 +55,9 @@ public class BusHelper
         final PersistedApplication application = (PersistedApplication) context.getApplicationContext();
 
         if(args == null)
-            application.getProvider().sendMessage(context, message);
+            application.getConfig().getCommandPersistenceProvider().sendMessage(context, message);
         else
-            application.getProvider().sendMessage(context, message, args);
+            application.getConfig().getCommandPersistenceProvider().sendMessage(context, message, args);
     }
 
 }

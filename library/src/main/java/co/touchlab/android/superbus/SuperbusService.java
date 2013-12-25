@@ -23,6 +23,8 @@ import co.touchlab.android.superbus.log.BusLogImpl;
 public class SuperbusService extends Service
 {
     private SuperbusProcessor processor;
+    private SuperbusConfig config;
+
     private BusLog log;
     public static final String TAG = SuperbusService.class.getSimpleName();
 
@@ -47,16 +49,8 @@ public class SuperbusService extends Service
     {
         super.onCreate();
 
-        initLogAndForeground(getApplication());
-        processor = new SuperbusProcessor();
-        try
-        {
-            processor.init(this);
-        }
-        catch (ConfigException e)
-        {
-            throw new RuntimeException(e);
-        }
+        init(getApplication());
+        processor = new SuperbusProcessor(this, config);
     }
 
     @Override
@@ -74,40 +68,16 @@ public class SuperbusService extends Service
         log.i(TAG, "onDestroy");
     }
 
-    public void initLogAndForeground(Application application)
+    public void init(Application application)
     {
         if (application instanceof PersistedApplication)
         {
             PersistedApplication persistedApplication = (PersistedApplication) application;
 
-            log = persistedApplication.getLog();
-            if (log == null)
-                log = new BusLogImpl();
+            config = persistedApplication.getConfig();
+            log = config.log;
 
-            ForegroundNotificationManager foregroundNotificationManager = persistedApplication.getForegroundNotificationManager();
-            if (foregroundNotificationManager == null)
-            {
-                foregroundNotificationManager = new ForegroundNotificationManager()
-                {
-                    @Override
-                    public boolean isForeground()
-                    {
-                        return false;
-                    }
-
-                    @Override
-                    public Notification updateNotification(Context superbusService)
-                    {
-                        return null;
-                    }
-
-                    @Override
-                    public int notificationId()
-                    {
-                        return 24601;
-                    }
-                };
-            }
+            ForegroundNotificationManager foregroundNotificationManager = config.foregroundNotificationManager;
 
             if (foregroundNotificationManager.isForeground())
             {

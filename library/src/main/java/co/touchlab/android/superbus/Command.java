@@ -238,13 +238,13 @@ public abstract class Command implements Comparable<Command>, Serializable
     public void repostSelf(Context context) throws StorageException
     {
         PersistedApplication persistedApplication = (PersistedApplication) context.getApplicationContext();
-        persistedApplication.getProvider().put(context, this);
+        persistedApplication.getConfig().getCommandPersistenceProvider().put(context, this);
     }
 
     public void removeSelf(Context context) throws StorageException
     {
         PersistedApplication persistedApplication = (PersistedApplication) context.getApplicationContext();
-        persistedApplication.getProvider().removeCommand(this);
+        persistedApplication.getConfig().getCommandPersistenceProvider().removeCommand(this);
     }
 
     private Long id;

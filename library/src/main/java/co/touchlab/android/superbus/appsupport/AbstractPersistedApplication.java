@@ -4,8 +4,10 @@ import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
 import co.touchlab.android.superbus.ForegroundNotificationManager;
 import co.touchlab.android.superbus.PersistedApplication;
+import co.touchlab.android.superbus.SuperbusConfig;
 import co.touchlab.android.superbus.SuperbusEventListener;
 import co.touchlab.android.superbus.errorcontrol.CommandPurgePolicy;
+import co.touchlab.android.superbus.errorcontrol.ConfigException;
 import co.touchlab.android.superbus.errorcontrol.TransientRetryBusEventListener;
 import co.touchlab.android.superbus.log.BusLog;
 import co.touchlab.android.superbus.storage.CommandPersistenceProvider;
@@ -27,46 +29,36 @@ import java.util.List;
  */
 public abstract class AbstractPersistedApplication extends Application implements PersistedApplication
 {
-    private CommandPersistenceProvider persistenceProvider;
+    private SuperbusConfig config;
 
     @Override
     public void onCreate()
     {
         super.onCreate();
-        persistenceProvider = new CommandPersistenceProvider(new LocalDatabaseFactory(), new GsonStoredCommandAdapter(), null);
+        try
+        {
+            config = new SuperbusConfig.Builder()
+                            .setCommandPersistenceProvider(new CommandPersistenceProvider(new LocalDatabaseFactory(), new GsonStoredCommandAdapter(), null))
+                            .addEventListener(new TransientRetryBusEventListener())
+                            .build();
+        }
+        catch (ConfigException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
+    public SuperbusConfig getConfig()
+    {
+        return config;
+    }
+
+    /*@Override
     public CommandPersistenceProvider getProvider()
     {
-        return persistenceProvider;
-    }
-
-    @Override
-    public BusLog getLog()
-    {
-        return null;
-    }
-
-    @Override
-    public Collection<SuperbusEventListener> getEventListeners()
-    {
-        List<SuperbusEventListener> list = new ArrayList<SuperbusEventListener>(1);
-        list.add(new TransientRetryBusEventListener());
-        return list;
-    }
-
-    @Override
-    public CommandPurgePolicy getCommandPurgePolicy()
-    {
-        return null;
-    }
-
-    @Override
-    public ForegroundNotificationManager getForegroundNotificationManager()
-    {
-        return null;
-    }
+        return config.getCommandPersistenceProvider();
+    }*/
 
     private final class LocalDatabaseFactory implements SQLiteDatabaseFactory
     {

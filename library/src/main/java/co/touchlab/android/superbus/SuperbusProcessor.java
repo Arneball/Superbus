@@ -25,26 +25,20 @@ public class SuperbusProcessor
 {
     public static final String TAG = SuperbusProcessor.class.getSimpleName();
     private CommandThread thread;
+    private SuperbusConfig config;
     private CommandPersistenceProvider provider;
-    private List<SuperbusEventListener> eventListenerList = new ArrayList<SuperbusEventListener>();
-    private CommandPurgePolicy commandPurgePolicy;
     private BusLog log;
     private Handler mainThreadHandler;
     private Service parentService;
     private Application appContext;
-    private ForegroundNotificationManager foregroundNotificationManager;
 
-    void init(Service parentService) throws ConfigException
+    public SuperbusProcessor(Service parentService, SuperbusConfig config)
     {
         this.appContext = parentService.getApplication();
         this.parentService = parentService;
-        provider = checkLoadProvider(appContext);
-        Collection<SuperbusEventListener> listeners = checkLoadEventListener(appContext);
-        if(listeners != null)
-            eventListenerList.addAll(listeners);
-        commandPurgePolicy = checkLoadCommandPurgePolicy(appContext);
-        log.v(TAG, "onCreate " + System.currentTimeMillis());
-
+        this.config = config;
+        log = config.log;
+        provider = config.commandPersistenceProvider;
         mainThreadHandler = new Handler();
     }
 
@@ -92,7 +86,7 @@ public class SuperbusProcessor
 
             try
             {
-                for (SuperbusEventListener eventListener : eventListenerList)
+                for (SuperbusEventListener eventListener : config.eventListeners)
                 {
                     eventListener.onBusStarted(appContext, provider);
                 }
@@ -104,10 +98,10 @@ public class SuperbusProcessor
                     c.setCommandRunning(true);
                     logCommandDebug(c, "[CommandThread]");
 
-                    if(foregroundNotificationManager != null)
+                    if(config.foregroundNotificationManager.isForeground())
                     {
                          final NotificationManager notificationManager = (NotificationManager) parentService.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-                         notificationManager.notify(foregroundNotificationManager.notificationId(), foregroundNotificationManager.updateNotification(parentService));
+                         notificationManager.notify(config.foregroundNotificationManager.notificationId(), config.foregroundNotificationManager.updateNotification(parentService));
                     }
 
                     try
@@ -127,7 +121,7 @@ public class SuperbusProcessor
                             log.e(TAG, null, e);
                             c.setTransientExceptionCount(c.getTransientExceptionCount() + 1);
 
-                            boolean purge = commandPurgePolicy.purgeCommandOnTransientException(c, e);
+                            boolean purge = config.commandPurgePolicy.purgeCommandOnTransientException(c, e);
 
                             if (purge)
                             {
@@ -204,7 +198,7 @@ public class SuperbusProcessor
     {
         try
         {
-            for (SuperbusEventListener eventListener : eventListenerList)
+            for (SuperbusEventListener eventListener : config.eventListeners)
             {
                 eventListener.onBusFinished(context, provider, provider.getSize() == 0);
             }
@@ -222,73 +216,5 @@ public class SuperbusProcessor
         command.callCommand(appContext);
 
         logCommandVerbose(command, "callComand-finish");
-    }
-
-    /**
-     * We expect the application that uses this library to have a custom subclass of Application which implements
-     * PersistedApplication. This convention is to agree upon a way to specify how the service stores/loads its commands.
-     *
-     * @param application The Application object.
-     * @return Some implementation of PersistenceProvider.
-     */
-    public CommandPersistenceProvider checkLoadProvider(Application application) throws ConfigException
-    {
-        CommandPersistenceProvider result;
-
-        if (application instanceof PersistedApplication)
-        {
-            PersistedApplication persistedApplication = (PersistedApplication) application;
-
-            log = persistedApplication.getLog();
-
-            foregroundNotificationManager = persistedApplication.getForegroundNotificationManager();
-
-            if(foregroundNotificationManager != null && foregroundNotificationManager.notificationId() <= 0)
-                throw new ConfigException("Foreground notification id should be greater than 0");
-
-            result = persistedApplication.getProvider();
-        }
-        else
-            throw new RuntimeException("No PersistenceProvider was found");
-
-        if (log == null)
-            log = new BusLogImpl();
-
-        return result;
-    }
-
-    /**
-     * We expect the application that uses this library to have a custom subclass of Application which implements
-     * PersistedApplication. This convention is to agree upon a way to specify how the service stores/loads its commands.
-     *
-     * @param application The Application object.
-     * @return Some implementation of PersistenceProvider.
-     */
-    public Collection<SuperbusEventListener> checkLoadEventListener(Application application)
-    {
-        if (application instanceof PersistedApplication)
-        {
-            PersistedApplication persistedApplication = (PersistedApplication) application;
-
-            return persistedApplication.getEventListeners();
-        }
-
-        return null;
-    }
-
-    public CommandPurgePolicy checkLoadCommandPurgePolicy(Application application)
-    {
-        CommandPurgePolicy purgePolicy = null;
-
-        if (application instanceof PersistedApplication)
-        {
-            PersistedApplication persistedApplication = (PersistedApplication) application;
-            purgePolicy = persistedApplication.getCommandPurgePolicy();
-        }
-
-        if (purgePolicy == null)
-            purgePolicy = new TransientMethuselahCommandPurgePolicy();
-
-        return purgePolicy;
     }
 }
