@@ -10,6 +10,6 @@ Lots of code was pulled.  There used to be many ways to store command lists, now
 
 There's also support for sqlciper so you can have encrypted bus storage, although that hasn't yet been tested in any way.  Coming.
 
-Also, in the near future, you can choose command-based or state-based sync.  My offline sync theory concocted this while "command-based" plan, and like all new fancy ideas, I pushed on it too hard.  Not all situations need a command bus.  However, even state-based sync could use some nice coordination.
+Also, in the near future, you can choose command-based or state-based sync.  My offline sync theory concocted this whole "command-based" plan, and like all new fancy ideas, I pushed on it too hard.  Not all situations need a command bus.  However, even state-based sync could use some nice coordination.
 
 Some other changes are coming.  Short story, we've learned a lot, and that learning keeps going.
