@@ -238,6 +238,7 @@ public class CommandPersistenceProvider implements PersistenceProvider
         }
     }
 
+    @Override
     public final synchronized void queryAll(CommandQuery query)
     {
         for (Command command : commandQueue)

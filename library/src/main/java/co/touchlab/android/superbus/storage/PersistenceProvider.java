@@ -17,4 +17,5 @@ public interface PersistenceProvider
     void removeCommand(Command command) throws StorageException;
     void repostCommand(Command command) throws StorageException;
     int getSize() throws StorageException;
+    void queryAll(CommandQuery query);
 }

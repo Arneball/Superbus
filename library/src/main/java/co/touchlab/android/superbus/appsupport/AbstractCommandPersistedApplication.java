@@ -29,10 +29,10 @@ public abstract class AbstractCommandPersistedApplication extends Application im
         super.onCreate();
         try
         {
-            config = new SuperbusConfig.Builder()
-                            .setPersistenceProvider(new CommandPersistenceProvider(new LocalDatabaseFactory(), new GsonStoredCommandAdapter(), null))
-                            .addEventListener(new TransientRetryBusEventListener())
-                            .build();
+            SuperbusConfig.Builder builder = new SuperbusConfig.Builder();
+            builder.setPersistenceProvider(new CommandPersistenceProvider(new LocalDatabaseFactory(), new GsonStoredCommandAdapter(), null));
+            buildConfig(builder);
+            config = builder.build();
         }
         catch (ConfigException e)
         {
@@ -40,8 +40,10 @@ public abstract class AbstractCommandPersistedApplication extends Application im
         }
     }
 
+    protected abstract void buildConfig(SuperbusConfig.Builder configBuilder) throws ConfigException;
+
     @Override
-    public SuperbusConfig getConfig()
+    public final SuperbusConfig getConfig()
     {
         return config;
     }
