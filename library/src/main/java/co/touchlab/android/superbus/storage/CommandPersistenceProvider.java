@@ -247,6 +247,23 @@ public class CommandPersistenceProvider implements PersistenceProvider
         }
     }
 
+    @Override
+    public void runInTransaction(Runnable r)
+    {
+        SQLiteDatabaseIntf db = databaseFactory.getDatabase();
+        db.beginTransaction();
+
+        try
+        {
+            r.run();
+            db.setTransactionSuccessful();
+        }
+        finally
+        {
+            db.endTransaction();
+        }
+    }
+
     public synchronized int getSize() throws StorageException
     {
         loadInitialCommands();
@@ -299,26 +316,39 @@ public class CommandPersistenceProvider implements PersistenceProvider
         try
         {
             SQLiteDatabaseIntf db = databaseFactory.getDatabase();
-            CursorIntf cursor = db.query(TABLE_NAME, COLUMN_LIST);
 
-            List<Command> commands = null;
+            //Run query in a transaction to block changes while loading.  Probably not critical, but good for consistency
+            db.beginTransaction();
+
             try
             {
-                commands = new ArrayList<Command>();
+                CursorIntf cursor = db.query(TABLE_NAME, COLUMN_LIST);
 
-                while (cursor.moveToNext())
+                List<Command> commands = null;
+                try
                 {
-                    Command command = loadFromCursor(cursor);
-                    if(command != null)
-                        commands.add(command);
+                    commands = new ArrayList<Command>();
+
+                    while (cursor.moveToNext())
+                    {
+                        Command command = loadFromCursor(cursor);
+                        if(command != null)
+                            commands.add(command);
+                    }
                 }
+                finally
+                {
+                    cursor.close();
+                }
+
+                db.setTransactionSuccessful();
+
+                return commands;
             }
             finally
             {
-                cursor.close();
+                db.endTransaction();
             }
-
-            return commands;
         }
         catch (Exception e)
         {

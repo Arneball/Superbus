@@ -99,4 +99,22 @@ public class ClearSQLiteDatabase implements SQLiteDatabaseIntf
     {
         return db.update(tableName, values, whereClause, whereArgs);
     }
+
+    @Override
+    public void beginTransaction()
+    {
+        db.beginTransaction();
+    }
+
+    @Override
+    public void setTransactionSuccessful()
+    {
+        db.setTransactionSuccessful();
+    }
+
+    @Override
+    public void endTransaction()
+    {
+        db.endTransaction();
+    }
 }

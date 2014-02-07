@@ -17,4 +17,7 @@ public interface SQLiteDatabaseIntf
     int delete(String tableName, String query, String[] params);
     long insertOrThrow(String tableName, String nullColHack, ContentValues values)throws StorageException;
     int update(String tableName, ContentValues values, String whereClause, String[] whereArgs);
+    void beginTransaction();
+    void setTransactionSuccessful();
+    void endTransaction();
 }

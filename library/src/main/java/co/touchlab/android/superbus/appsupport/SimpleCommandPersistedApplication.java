@@ -4,8 +4,6 @@ import android.database.sqlite.SQLiteDatabase;
 import co.touchlab.android.superbus.SuperbusConfig;
 import co.touchlab.android.superbus.errorcontrol.ConfigException;
 import co.touchlab.android.superbus.errorcontrol.TransientRetryBusEventListener;
-import co.touchlab.android.superbus.storage.CommandPersistenceProvider;
-import co.touchlab.android.superbus.storage.gson.GsonStoredCommandAdapter;
 import co.touchlab.android.superbus.storage.sqlite.SimpleDatabaseHelper;
 
 /**
