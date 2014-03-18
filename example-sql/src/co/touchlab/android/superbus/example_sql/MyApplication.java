@@ -3,8 +3,12 @@ package co.touchlab.android.superbus.example_sql;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.StrictMode;
+import co.touchlab.android.superbus.SuperbusConfig;
 import co.touchlab.android.superbus.appsupport.AbstractCommandPersistedApplication;
 import co.touchlab.android.superbus.appsupport.CommandBusHelper;
+import co.touchlab.android.superbus.appsupport.WakeLockEventListener;
+import co.touchlab.android.superbus.errorcontrol.ConfigException;
+import co.touchlab.android.superbus.errorcontrol.TransientRetryBusEventListener;
 
 /**
  * User: William Sanville
@@ -34,6 +38,13 @@ public class MyApplication extends AbstractCommandPersistedApplication
                 CommandBusHelper.submitCommandSync(MyApplication.this, new GetMessageCommand());
             }
         }.start();
+    }
+
+    @Override
+    protected void buildConfig(SuperbusConfig.Builder configBuilder) throws ConfigException
+    {
+        //Add event listeners here.
+        configBuilder.addEventListener(new WakeLockEventListener());
     }
 
     private void setupStrictMode()
