@@ -15,7 +15,6 @@ public interface PersistenceProvider
     void logPersistenceState();
     Command readTop() throws StorageException;
     void removeCommand(Command command) throws StorageException;
-    void repostCommand(Command command) throws StorageException;
     int getSize() throws StorageException;
     void queryAll(CommandQuery query);
     void runInTransaction(Runnable r);

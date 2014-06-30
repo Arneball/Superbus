@@ -145,21 +145,6 @@ public class CommandPersistenceProvider implements PersistenceProvider
         return values;
     }
 
-    public synchronized void repostCommand(Command command) throws StorageException
-    {
-        boolean duplicate = checkHasDuplicate(command);
-
-        if(duplicate)
-        {
-            removeCommand(command);
-        }
-        else
-        {
-            ContentValues values = prepCommandSave(command);
-            databaseFactory.getDatabase().update(TABLE_NAME, values, "id = ?", new String[]{command.getId().toString()});
-        }
-    }
-
     protected void checkNoArg(Command command) throws StorageException
     {
         Class<? extends Command> commandClass = command.getClass();

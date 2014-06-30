@@ -46,19 +46,6 @@ public class CommandBusHelper
         }
     }
 
-    public static void repostCommandSync(Context context, Command command)
-        {
-            final PersistedApplication application = (PersistedApplication) context.getApplicationContext();
-            try
-            {
-                application.getConfig().getPersistenceProvider().repostCommand(command);
-            }
-            catch (StorageException e)
-            {
-                throw new RuntimeException(e);
-            }
-        }
-
     public static void sendMessage(Context context, String message)
     {
         sendMessage(context, message, null);
