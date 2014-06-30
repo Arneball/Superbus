@@ -55,9 +55,7 @@
       <module name="touchtrack-android" target="1.5" />
     </bytecodeTargetLevel>
   </component>
-  <component name="CopyrightManager" default="">
-    <module2copyright />
-  </component>
+  <component name="CopyrightManager" default="" />
   <component name="DependencyValidationManager">
     <option name="SKIP_IMPORT_STATEMENTS" value="false" />
   </component>
@@ -68,6 +66,10 @@
   <component name="IdProvider" IDEtalkID="CE025FAB2B45442816E6B80BA417A956" />
   <component name="IvyProjectSettings">
     <dependencies />
+  </component>
+  <component name="JavaScriptLibraryMappings">
+    <excludedPredefinedLibrary name="HTML" />
+    <excludedPredefinedLibrary name="HTML5 / EcmaScript 5" />
   </component>
   <component name="JavadocGenerationManager">
     <option name="OUTPUT_DIRECTORY" />

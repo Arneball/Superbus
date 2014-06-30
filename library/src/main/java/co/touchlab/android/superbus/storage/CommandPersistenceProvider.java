@@ -78,6 +78,16 @@ public class CommandPersistenceProvider implements PersistenceProvider
         SuperbusService.notifyStart(context);
     }
 
+    /**
+     * There's a bit of an issue here.  If a command is currently in process, it'll be queried for 'same'.  However,
+     * from a temporally complete perspective, its conceivable that you wouldn't want that.  However, its difficult
+     * to temporarily remove the command, and checking the running flag is tricky.
+     *
+     * In theory, if its super important, the command itself could check if the compared one is running.
+     *
+     * @param c
+     * @return
+     */
     private boolean checkHasDuplicate(Command c)
     {
         boolean duplicate = false;

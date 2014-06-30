@@ -7,6 +7,7 @@ import android.content.Context;
 import android.os.Handler;
 import co.touchlab.android.superbus.errorcontrol.PermanentException;
 import co.touchlab.android.superbus.errorcontrol.StorageException;
+import co.touchlab.android.superbus.errorcontrol.SuperbusProcessException;
 import co.touchlab.android.superbus.errorcontrol.TransientException;
 import co.touchlab.android.superbus.log.BusLog;
 import co.touchlab.android.superbus.storage.PersistenceProvider;
@@ -72,6 +73,11 @@ public class SuperbusProcessor
         }
     }
 
+    private enum CommandResult
+    {
+        Success, Transient, Permanent
+    }
+    
     private class CommandThread extends Thread
     {
         @Override
@@ -92,6 +98,9 @@ public class SuperbusProcessor
 
                 while ((c = provider.readTop()) != null)
                 {
+                    CommandResult commandResult;
+                    Throwable cause;
+                    
                     c.setCommandRunning(true);
                     logCommandDebug(c, "[CommandThread]");
 
@@ -104,55 +113,68 @@ public class SuperbusProcessor
                     try
                     {
                         callCommand(c);
-
-                        //TODO: need to deal with failure of save
-                        provider.removeCommand(c);
-
-                        //TODO: need to deal with failure of callback
-                        c.onSuccess(appContext);
+                        cause = null;
+                        commandResult = CommandResult.Success;
                     }
                     catch (TransientException e)
                     {
-                        try
+                        cause = e;
+
+                        boolean purge = config.commandPurgePolicy.purgeCommandOnTransientException(c, e);
+
+                        if (purge)
                         {
-                            log.e(TAG, null, e);
-                            c.setTransientExceptionCount(c.getTransientExceptionCount() + 1);
-
-                            boolean purge = config.commandPurgePolicy.purgeCommandOnTransientException(c, e);
-
-                            if (purge)
-                            {
-                                log.w(TAG, "Purging command on TransientException: {" + c.logSummary() + "}");
-                                provider.removeCommand(c);
-                                c.onPermanentError(appContext, new PermanentException(e));
-                            }
-                            else
-                            {
-                                c.setCommandRunning(false);
-                                provider.repostCommand(c);
-                                c.onTransientError(appContext, e);
-                            }
-
-                            break;
+                            log.w(TAG, "Purging command on TransientException: {" + c.logSummary() + "}");
+                            commandResult = CommandResult.Permanent;
                         }
-                        catch (StorageException e1)
+                        else
                         {
-                            provider.removeCommand(c);
-                            logPermanentException(c, e1);
+                            commandResult = CommandResult.Transient;
                         }
                     }
                     catch (Throwable e)
                     {
-                        provider.removeCommand(c);
-                        logPermanentException(c, e);
+                        cause = e;
+                        commandResult = CommandResult.Permanent;
                     }
 
+                    if(cause != null)
+                        log.e(TAG, null, cause);
+
+                    //Deal with status
+                    switch (commandResult)
+                    {
+                        case Success:
+                            provider.removeCommand(c);
+                            c.onSuccess(appContext);
+                            break;
+
+                        case Transient:
+                            c.setTransientExceptionCount(c.getTransientExceptionCount() + 1);//TODO: This will never be persisted.  Could be an issue.
+                            logTransientException(c, cause);
+                            break;
+
+                        case Permanent:
+                            provider.removeCommand(c);
+                            logPermanentException(c, cause);
+                            break;
+
+                        default:
+                            throw new SuperbusProcessException("Unknown status");
+                    }
+
+                    c.setCommandRunning(false);
+
                     log.d(TAG, "Command [" + c.getClass().getSimpleName() + "] ended: " + System.currentTimeMillis());
+
+                    //Must leave loop for a bit
+                    if(commandResult == CommandResult.Transient)
+                        break;
                 }
             }
-            catch (Throwable e)
+            catch (StorageException e)
             {
-                log.e(TAG, "Thread ended with exception", e);
+                throw new SuperbusProcessException(e);
             }
 
             mainThreadHandler.post(new Runnable()
@@ -164,6 +186,13 @@ public class SuperbusProcessor
                     stopService();
                 }
             });
+        }
+
+        private void logTransientException(Command c, Throwable e)
+        {
+            log.e(TAG, null, e);
+            TransientException pe = e instanceof TransientException ? (TransientException) e : new TransientException(e);
+            c.onTransientError(appContext, pe);
         }
 
         private void logPermanentException(Command c, Throwable e)
