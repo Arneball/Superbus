@@ -214,9 +214,9 @@
         </dependency>
 
         <dependency>
-            <groupId>code.google.com</groupId>
-            <artifactId>basic-http-client</artifactId>
-            <version>0.87.1</version>
+            <groupId>com.turbomanage.basic-http-client</groupId>
+            <artifactId>http-client-java</artifactId>
+            <version>0.89</version>
             <scope>compile</scope>
         </dependency>
 

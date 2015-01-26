@@ -25,13 +25,17 @@ public class WakeLockEventListener implements SuperbusEventListener
         PowerManager pm = (PowerManager)context.getSystemService(
                                                   Context.POWER_SERVICE);
         wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WakeLockEventListener.class.getSimpleName());
-        wl.acquire();
+        try {
+            wl.acquire();
+        } catch (Exception e) {} // swallow, thats what he said
     }
 
     @Override
     public void onBusFinished(Context context, PersistenceProvider provider, boolean complete)
     {
         Log.d(WakeLockEventListener.class.getSimpleName(), "WakeLong-onBusFinished");
-        wl.release();
+        try {
+            wl.release();
+        } catch (Exception e) {}
     }
 }
